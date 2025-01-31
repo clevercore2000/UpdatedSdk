@@ -153,14 +153,14 @@ public class AutoOpDev extends LinearOpMode
         // Check that all systems are in position or stopped
         return
                 (
-                        mecanumDev.isReady()
-                                &&  sliderDev.isReady()
-                                && sliderDev.isReady()
-                                &&  gripperArm.isReady()
-                                &&  handlerArm.isReady()
-                                &&  transferArm.isReady()
-                                &&  poleArm.isReady()
-                                && turnerArm.isReady()
+                mecanumDev.isReady()
+                &&  sliderDev.isReady()
+                && sliderDev.isReady()
+                &&  gripperArm.isReady()
+                &&  handlerArm.isReady()
+                &&  transferArm.isReady()
+                &&  poleArm.isReady()
+                && turnerArm.isReady()
                 );
     }
 

@@ -22,9 +22,7 @@ public class Hardware
 
 
     public Servo gripperServo;
-    public Servo sliderServo;
     public Servo handlerServo;
-    public Servo flipperServo;
     public Servo transferServo;
     public Servo poleServo;
     public Servo turnerServo;

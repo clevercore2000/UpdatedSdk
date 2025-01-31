@@ -52,16 +52,18 @@ public class SliderDev{
 
     private double actPos = 0;           // Actual position
     private double prevPos = 0;          // Preview position
-    private double actSpeed = 0;         // Actual Speed
+    public double actSpeed = 0;         // Actual Speed
+    private double spSpeed = 0;
     private double targetPos = 0.0D;     // Target position
     private double targetSpeed = 0.0D;   // Target speed
     private double maxSpeed;             // Maximum speed of slider
     private double prevTrgSpeed=0;      // Previous target speed
-    private PIDController sliderSpeedController;    // PID controller to drive the speed of the slider
-    private double slider1Power;         // Power slider 1
+    private PIDController pidSlider1;    // PID controller to drive the speed of the slider
+    private PIDController pidSlider2;    // PID controller to drive the speed of the slider
+    public double slider1Power;         // Power slider 1
     private double slider2Power;         // Power slider 2
     private final ElapsedTime timer = new ElapsedTime();    // Timer
-    private double dT;                  // Time quanta between execute() method calls
+    public double dT;                  // Time quanta between execute() method calls
     // Method: SliderDev
     // Constructor
     public SliderDev(Hardware hw)
@@ -79,9 +81,9 @@ public class SliderDev{
      */
     private double speedRampGenLPF( double inputTargetSpeed )
     {
-        double retunTarget = DMP_LPF*prevTrgSpeed + (1-DMP_LPF)*inputTargetSpeed;
-        prevTrgSpeed = retunTarget;
-        return retunTarget;
+        double returnTarget = DMP_LPF*prevTrgSpeed + (1-DMP_LPF)*inputTargetSpeed;
+        prevTrgSpeed = returnTarget;
+        return returnTarget;
     }
     // Method: speedRampGenLF
     // Generates a S shaped ramp for the speed set-point using Logistic function
@@ -93,8 +95,8 @@ public class SliderDev{
     }
 
 
-    // Method: Limitter ** Returns a value of inputValue but that do not exceeds (-maxValue, +maxValue)
-    private double  Limitter( double inputValue, double maxValue )
+    // Method: Limiter ** Returns a value of inputValue but that do not exceeds (-maxValue, +maxValue)
+    private double  Limiter( double inputValue, double maxValue )
     {
         return ( Math.max(-maxValue, Math.min(inputValue, maxValue)));
     }
@@ -102,7 +104,8 @@ public class SliderDev{
     public void Initialize()
     {
         // Set speed controller PID parameters - this call should be in an initialisation function - it is required to execute once when robot is powered up
-        sliderSpeedController = new PIDController(SPEED_KP, SPEED_KI, SPEED_KD);
+        pidSlider1 = new PIDController(SPEED_KP, SPEED_KI, SPEED_KD);
+        pidSlider2 = new PIDController(SPEED_KP, SPEED_KI, SPEED_KD);
         prevTrgSpeed=0;
         timer.startTime();
         timer.reset();
@@ -124,51 +127,46 @@ public class SliderDev{
         /*
          *  ** tagetPosition and target Speed are set in the MoveTo and ManualMove method
          */
-
         // Read the elapsed time from last timer.reset() call
         // actual value of Time - dT is what timer counted since last Timer.reset() call
-        dT = timer.milliseconds(); // Timer interval between two consecutive app scans
+        dT = timer.milliseconds()/1E3; // Timer interval between two consecutive app scans
         timer.reset();
-
-        // Calculate the actual speed of the slider v = ( X-Xo )/(T-To)
-        actPos = hardware.sliderMotor1.getCurrentPosition();
-        actSpeed = (actPos - prevPos/*it is actually previous position*/) / dT;
         // Read actual position of the Slider
-        actPos = hardware.sliderMotor1.getCurrentPosition();   // now we update with actual position
+        actPos = hardware.sliderMotor1.getCurrentPosition();
+        // Calculate the actual speed of the slider v = ( X-Xo )/(T-To)
+        actSpeed = (actPos - prevPos) / dT;
         prevPos = actPos;
+        // Set speed=0 if limits are reached
+        softLimits();
         if( Status == SliderStatus.SliderMoveAuto )
         {
             // Calculates the position deviation as (targetPos - actPos) and the targetSpeed output of P-Controller (posDeviation, posKp )
-            // Target speed is limitted to range of (-MAX_SPEED, +MAX_SPEED)
-            //TODO Varinanta cu limitter - vezi sensul +/- // targetSpeed = Limitter(((targetPos - actPos) * POS_KP), MAX_SPEED);
-            targetSpeed = ((targetPos - actPos) * POS_KP);
-
-            if( inPosition() )
-            {
-                targetSpeed = 0;
-                Status = SliderStatus.SliderReady;
-            }
-            // Smothen the taget speed setpoint for the PI controller
-            //targetSpeed = speedRampGenLPF(targetSpeed);
-            //targetSpeed /= MAX_SPEED;
+            spSpeed = Limiter( ((targetPos - actPos) * POS_KP) , targetSpeed); // Proportional ( POS_KP ) position controller with limiter of speed to targetSpeed
+            //spSpeed = speedRampGenLPF(spSpeed); // Smoothen the target speed set-point for the PI controller
         }
         if( Status == SliderStatus.SilderMoveJog )
         {
-            targetSpeed = speedRampGenLPF(targetSpeed);
+        //    spSpeed = speedRampGenLPF(targetSpeed);
+            spSpeed = targetSpeed;
         }
-
-        maxSpeed = Math.max(targetSpeed, maxSpeed);
-        // Computes PI-Controller DCMotor Power for Slider for a control speed deviation = ( targetSpeed - actSliderSpeed )
+        spSpeed *= 0.01;
         // Power applied to DCMotor of the slider
-        //TODO Varianta cu Limmiter - vezi sensul deplasarii // slider1Power = Limitter(sliderSpeedController.calculate( /*actSliderSpeed*/hardware.sliderMotor1.getPower(), /*setpoinPower*/targetSpeed), MAX_POWER);
-        slider1Power = sliderSpeedController.calculate( /*actSliderSpeed*/hardware.sliderMotor1.getPower(), /*setpoinPower*/targetSpeed);
-        // Apply to Slider2 the speed setpoint of the slider1 ( ... requires testing to check if stable )
-        //  if not stable then it will be required to add P-controller to slider1 as well
-        slider2Power = sliderSpeedController.calculate( /*actSliderSpeed*/hardware.sliderMotor1.getPower(), /*setpoinPower*/targetSpeed);
+        slider1Power = ( spSpeed - hardware.sliderMotor1.getPower() ) * SPEED_KP;
+        slider1Power =Limiter(slider1Power, MAX_POWER);
+
+        slider2Power = ( spSpeed - hardware.sliderMotor2.getPower() ) * SPEED_KP;
+        slider2Power = Limiter(slider2Power, MAX_POWER);
         // Apply calculated control value to Slider
         hardware.sliderMotor1.setPower(slider1Power);
         hardware.sliderMotor2.setPower(slider2Power);
+
+        if( inPosition() )
+        {
+            //targetSpeed = 0; //TODO:TEST closed loop - if not working add below line
+            Status = SliderStatus.SliderReady;
+        }
         updateConfig();
+
     }
 
     //   Method: stop ** Stop all moves and puts the DCMotors in Freewheel
@@ -178,19 +176,19 @@ public class SliderDev{
         // Until above question is answered just stop movements
         targetPos = actPos;
     }
-
-
      //   Method: MoveTo ** Request to move the sliders to specified position
     public void moveTo( double trgPos, double trgSpeed)
     {
         targetPos = Math.min(MAX_TRAVEL, trgPos );
         targetSpeed = trgSpeed;
+        Status = SliderStatus.SliderMoveAuto;
     }
     // Method: moveTo **  This method starts the move with JOG_SPEED
     public void moveTo( double trgPos )
     {
         targetPos = Math.min(MAX_TRAVEL, trgPos );
         targetSpeed = ConfigVar.Slider.JOG_SPEED;
+        Status = SliderStatus.SliderMoveAuto;
     }
     // Method: moveTo ** This method receives position and speed as Strings
     public void moveTo( String trgPos, String trgSpeed )
@@ -208,11 +206,14 @@ public class SliderDev{
     public void moveJog( double stickSlider )
     {
         // TODO targetPos = ( stickExpo(stickSlider) < -STICK_DEAD_ZONE )? -MAX_TRAVEL : (stickExpo(stickSlider) > STICK_DEAD_ZONE )? + MAX_TRAVEL : 0;
-        targetSpeed = stickSlider * STICK_GAIN;
+        targetSpeed = stickSlider * STICK_GAIN * JOG_SPEED;
         // Software limits
-        if( stickSlider>0 && actPos >= MAX_HEIGHT ) targetSpeed = 0;
-        if( stickSlider<0  && actPos <= MIN_HEIGHT ) targetSpeed = 0;
         Status = SliderStatus.SilderMoveJog;
+    }
+    void softLimits()
+    {
+        if( targetSpeed>0 && actPos >= MAX_HEIGHT ){ targetPos = MAX_HEIGHT-20; targetSpeed = 0;}
+        if( targetSpeed<0  && actPos <= MIN_HEIGHT ){ targetPos= MIN_HEIGHT+20; targetSpeed = 0;}
     }
 
     // Method: inPosition ** Returns true if slider reached the target position
@@ -220,7 +221,8 @@ public class SliderDev{
 
     // Methods: get__ ** Returns the named parameter
     public double getActPosition(){ return actPos;  }
-    public double getActualSpeed(){ return actSpeed; }
+    public double getActSpeed(){ return actSpeed; }
+    public double getSpSpeed(){return spSpeed; }
     public double getTargetSpeed(){ return targetSpeed; }
     public double getDeviation(){ return ((targetPos - actPos) * POS_KP);}
     // Method: isReady ** Returns true is slider completed all moves

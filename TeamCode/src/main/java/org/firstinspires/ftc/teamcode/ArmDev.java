@@ -129,7 +129,7 @@ public class ArmDev
     // This method starts the move and sets appropriate status to arm status
     public void moveTo(double newPosition)
     {
-    servo.setPosition( mapRange( newPosition ) );   // Initiates the move to required position
+        servo.setPosition( mapRange( newPosition ) );   // Initiates the move to required position
         trgPos = newPosition;               // Save the target position - necessary for calculation of travel duration
         state = ServoState.servoMove;       // Sets the arm in moving state
         tm.reset();                         // Reset the timer dt = 0;
