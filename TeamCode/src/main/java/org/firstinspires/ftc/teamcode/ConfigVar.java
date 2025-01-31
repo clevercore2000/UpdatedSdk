@@ -54,7 +54,7 @@ public class ConfigVar {
         public static double SP_PRE_PICK = 1300.0D; //
         public static double SP_PICK = 690.0D;      //
         public static double SP_PLACE = 3850.0D;
-        public static double SA_HOME = 100.0D;
+        public static double SA_HOME = 500.0D;
 
         // Predefined positions ( would this even work??)
         /*
@@ -90,7 +90,7 @@ public class ConfigVar {
         public static double transferSpCoop = 280;
 
         public static double POLE_MIN = 0;
-        public static double POLE_MAX = 180;
+        public static double POLE_MAX = 300;
         public static double poleSpPick = 20;
         public static double poleSpPlace = 180;
         public static double poleSaPrePick = 160;

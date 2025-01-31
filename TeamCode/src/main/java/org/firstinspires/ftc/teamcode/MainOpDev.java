@@ -107,7 +107,7 @@ void processAllSystems()
         return ColorValue.otherValue;
     };
 
-enum CagePickUp { cageIdle, cagePrePick, cagePick, cagePoleHome };
+enum CagePickUp { cageIdle,cagePrePick,  cageGripperOpen, cagePick, cagePoleHome };
 CagePickUp cagePickUp = CagePickUp.cageIdle;
 
 public void pickCage() {
@@ -115,17 +115,18 @@ public void pickCage() {
         case cageIdle:
             // Check all servo's are ready
             if (!gamepad2.dpad_left && (sliderDev.notReady() || gripperArm.notReady()  || poleArm.notReady())) break;
-            // Set status for next step in sequence
-            cagePickUp = CagePickUp.cagePrePick;
-            poleArm.moveTo(ConfigVar.ArmCfg.poleSaPrePick);
             sliderDev.moveTo(ConfigVar.Slider.SA_HOME);
-            gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
+            gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
+            cagePickUp = CagePickUp.cagePrePick;
             break;
         case cagePrePick:
-            if (poleArm.notReady() || gripperArm.notReady() || sliderDev.notReady()) break;
-            // Set status for next step in sequence
+            if (gripperArm.notReady() || sliderDev.notReady()) break;
+            poleArm.moveTo(ConfigVar.ArmCfg.poleSaPrePick);
+            cagePickUp = CagePickUp.cageGripperOpen;
+        case cageGripperOpen:
+            if (poleArm.notReady() ) break;
+            gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
             cagePickUp = CagePickUp.cagePick;
-            poleArm.moveTo(ConfigVar.ArmCfg.poleSaPick);
             break;
         case cagePick:
             /*Driver asks to Pick*/
@@ -158,12 +159,12 @@ public void pickSample()
         case pickIdle:
             // Check all servo's are ready
             if( !gamepad2.dpad_up || sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady() || turnerArm.notReady() ) break;
-            // Set status for next step in sequence
-            pickUpSample = PickUSample.pickStart;
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerOpened); // Open gripper
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
             poleArm.moveTo(ConfigVar.ArmCfg.poleSaPrePick);
             sliderDev.moveTo(ConfigVar.Slider.SP_PRE_PICK ); // Move slider to pre-pick position ( retracted up)
+            // Set status for next step in sequence
+            pickUpSample = PickUSample.pickStart;
             break;
         case pickStart:
             if( poleArm.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
@@ -236,7 +237,7 @@ public void runOpMode() throws InterruptedException
         pickSample();
         pickCage();
         // Use joystick only for tests/debugging the systems
-        /*
+/*
         if(  gripperToggle.Toggle(gamepad2.dpad_up) )
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed );
         else
@@ -282,11 +283,13 @@ public void runOpMode() throws InterruptedException
         telemetry.addData("Pact:", sliderDev.getActPosition());
         */
 
-        telemetry.addData("Status:", cagePickUp );
-        telemetry.addData("slider.:", sliderDev.isReady());
+        telemetry.addData("SampleSts:", pickUpSample );
+        telemetry.addData("CageSts:", cagePickUp );
+
         // telemetry.addData("transf.:", transferArm.isReady());
         // telemetry.addData("turner:", turnerArm.isReady());
         // telemetry.addData("handler:", handlerArm.isReady());
+        /*
         telemetry.addData("gripper:", gripperArm.isReady());
         telemetry.addData("pole:", poleArm.isReady());
         telemetry.addData("sPos:", sliderDev.getActPosition());
@@ -294,16 +297,16 @@ public void runOpMode() throws InterruptedException
         telemetry.addData("actSpe:", sliderDev.actSpeed);
         //telemetry.addData("StsSample:", pickUpSample );
         telemetry.addData("dT:", sliderDev.dT);
-        /*
+        */
         telemetry.addData("transf.:", transferArm.isReady());
         telemetry.addData("turner:", turnerArm.isReady());
         telemetry.addData("handler:", handlerArm.isReady());
         telemetry.addData("gripper:", gripperArm.isReady());
         telemetry.addData("pole:", poleArm.isReady());
+        telemetry.addData("slider.:", sliderDev.isReady());
         telemetry.addData("sPos:", sliderDev.getActPosition());
         telemetry.addData("sInPos:", sliderDev.inPosition());
-        telemetry.addData("Sts:", pickUpSample );
-         */
+
         telemetry.update();
 
     }

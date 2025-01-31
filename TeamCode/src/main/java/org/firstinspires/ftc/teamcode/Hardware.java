@@ -68,6 +68,7 @@ public class Hardware
         /**Servos**/
         gripperServo = hw.get(Servo.class, "Gripper");
         poleServo = hw.get(Servo.class, "Slider");
+        poleServo.setDirection(Servo.Direction.REVERSE);
         handlerServo = hw.get(Servo.class, "Handler");
         transferServo = hw.get(Servo.class, "Transfer");
         turnerServo = hw.get(Servo.class, "Turner");
