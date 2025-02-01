@@ -100,7 +100,7 @@ public class AutoOpDev extends LinearOpMode
         }
         // Initialize robot objects
         mecanumDev.Initialize();
-        sliderDev.Initialize();
+
         gripperArm.setRange(ConfigVar.ArmCfg.GRIPPER_MIN, ConfigVar.ArmCfg.GRIPPER_MAX);
         gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
 

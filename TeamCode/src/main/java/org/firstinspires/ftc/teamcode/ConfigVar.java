@@ -28,27 +28,25 @@ public class ConfigVar {
     @Config
     public static class Slider{
 
-        public static double autoPosition = 100;
-        public static double autoSpeed = 2;
         // Joystick EXPO factor {0,..,1}
         public static double STICK_EXPO = 0.0D;
         // Position and Speed PI-Controller parameters
-        public static double POS_KP = 1.0D;         // Position PID - proportional coefficient
-        public static double SPEED_KP = 0.90D;      // Speed PID - proportional coefficient
-        public static double SPEED_KI = 0.005D;     // Speed PID - Integrator coefficient
-        public static double SPEED_KD = 0.01;       // Speed PID - Derivative coefficient
-        public static double IN_WINDOW = 25;
+        public static double POS_KP = 15.0D;    // Position PID - proportional coefficient
+        public static double SPEED_KP = 0.001D;      // Speed PID - proportional coefficient
+        public static double SPEED_KI = 0.0001D;     // Speed PID - Integrator coefficient
+        public static double SPEED_KD = 0.0;       // Speed PID - Derivative coefficient
+        public static double IN_WINDOW = 30;
         public static double MAX_TRAVEL = 4000;     // old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
-        public static double MAX_SPEED = 100;       // Maximum speed
+        public static double HOLD_SPEED = 200;       // Maximum speed
+        public static double MAX_ACCEL = 500;
         public static double MAX_POWER = 1.0D;
+        public static double MAX_SPEED = 1700; // Encoder-ticks/sec
+        public static double EMA_FILTER = 0.6;
         // Speed Ramp Generator
         //  * uses logistic function to generate a setpoint signal for the speed controller
-        public static double MAX_SPEED_LF = 1500.0D;  // Speed Gain coefficient in Logistic Function (LF) (?? test appropriate value ??)
-        public static double RATE_SPEED_LF = 12.5D;  // Change Rate value in Logistic function f(x) = sspGainCoef/( 1+e^(-sspLogRate*speedSetPoint)
-        public static double DMP_LPF = 0.0D;  // Dumping factor used in LowPassFilter ramp generator. Value range is ( 0..1 ) where 0 means no dumping
         public static double STICK_DEAD_ZONE = 0.0D;
         public static double STICK_GAIN =  1.0D;  // Joystick input value
-        public static double JOG_SPEED = 100.0D;
+        public static double JOG_SPEED = 1700.0D;
         public static double MAX_HEIGHT = 3900.0D;
         public static double MIN_HEIGHT = 100.0D;
         public static double SP_PRE_PICK = 1300.0D; //
