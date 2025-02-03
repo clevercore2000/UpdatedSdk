@@ -74,21 +74,25 @@ public class ConfigVar {
     public static class ArmCfg{
         public static double GRIPPER_MIN = 0;
         public static double GRIPPER_MAX = 300;
+        public static double GRIPPER_SPEED = 100;
         public static double gripperOpened = 35;
         public static double gripperClosed= 90;
 
         public static double HANDLER_MIN = -90;
         public static double HANDLER_MAX = +90;
+        public static double HANDLER_SPEED = 100;
         public static double handlerOpened = 25;
         public static double handlerClosed = 0;
 
         public static double TRANSFER_MIN = 0;
         public static double TRANSFER_MAX = 300;
+        public static double TRANSFER_SPEED = 100;
         public static double transferSpPreCoop = 20;
         public static double transferSpCoop = 280;
 
         public static double POLE_MIN = 0;
         public static double POLE_MAX = 300;
+        public static double POLE_SPEED = 100;
         public static double poleSpPick = 20;
         public static double poleSpPlace = 180;
         public static double poleSaPrePick = 160;
@@ -97,6 +101,7 @@ public class ConfigVar {
 
         public static double TURNER_MIN = 0;
         public static double TURNER_MAX = 1800;
+        public static double TURNER_SPEED = 100;
         public static double turnerIdle = 1000;
         public static double turnerFlipped = 340;
     }

@@ -106,16 +106,19 @@ public class TestsOpDev extends LinearOpMode
             // mecanumDev moves manual according to joystick inputs
             mecanumDev.jogMoveXYR(gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x);
             // Slider moves manual according to joystick inputs when not in pick sample process
-            sliderDev.moveJog( -gamepad2.left_stick_y );
+            //sliderDev.moveJog( -gamepad2.left_stick_y );
             // Run Pick Up Sample Sequence
-
+            if(  gripperToggle.Toggle(gamepad2.dpad_up) )
+                sliderDev.moveTo( 1500 );
+            else
+                sliderDev.moveTo( 750 );
             // Use joystick only for tests/debugging the systems
-
+/*
         if(  gripperToggle.Toggle(gamepad2.dpad_up) )
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed );
         else
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened );
-
+*/
         if(handleToggle.Toggle(gamepad2.dpad_left))
             handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed );
         else
@@ -149,24 +152,18 @@ public class TestsOpDev extends LinearOpMode
         telemetry.addData("red", hardware.colorSensor.red());
         telemetry.addData("green", hardware.colorSensor.green());
         telemetry.addData("blue", hardware.colorSensor.blue());
-        /*
+*/
         telemetry.addData("sliderState:", sliderDev.isReady());
         telemetry.addData("actSpeed:", sliderDev.getActSpeed());
         telemetry.addData("spSpeed:", sliderDev.getSpSpeed());
-        telemetry.addData("Pact:", sliderDev.getActPosition());
-        */
+        telemetry.addData("actPos", sliderDev.getActPosition());
+        telemetry.addData("trgPos:", sliderDev.targetPos);
+
 
         // telemetry.addData("transf.:", transferArm.isReady());
         // telemetry.addData("turner:", turnerArm.isReady());
         // telemetry.addData("handler:", handlerArm.isReady());
-        telemetry.addData("gripper:", gripperArm.isReady());
-        telemetry.addData("pole:", poleArm.isReady());
-        telemetry.addData("sPos:", sliderDev.getActPosition());
-        telemetry.addData("Pow:", sliderDev.sliderPower);
-        telemetry.addData("actSpe:", sliderDev.actSpeed);
-        //telemetry.addData("StsSample:", pickUpSample );
-        telemetry.addData("dT:", sliderDev.dT);
-        /*
+  /*
         telemetry.addData("transf.:", transferArm.isReady());
         telemetry.addData("turner:", turnerArm.isReady());
         telemetry.addData("handler:", handlerArm.isReady());
@@ -174,8 +171,8 @@ public class TestsOpDev extends LinearOpMode
         telemetry.addData("pole:", poleArm.isReady());
         telemetry.addData("sPos:", sliderDev.getActPosition());
         telemetry.addData("sInPos:", sliderDev.inPosition());
-        telemetry.addData("Sts:", pickUpSample );
-         */
+*/
+
             telemetry.update();
 
         }
