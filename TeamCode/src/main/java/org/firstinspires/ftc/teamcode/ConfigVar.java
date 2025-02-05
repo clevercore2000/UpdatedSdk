@@ -34,7 +34,7 @@ public class ConfigVar {
         public static double POS_KP = 15.0D;    // Position PID - proportional coefficient
         public static double SPEED_KP = 0.001D;      // Speed PID - proportional coefficient
         public static double SPEED_KI = 0.0001D;     // Speed PID - Integrator coefficient
-        public static double SPEED_KD = 0.0;       // Speed PID - Derivative coefficient
+        public static double SPEED_KD = 0.02;       // Speed PID - Derivative coefficient
         public static double IN_WINDOW = 30;
         public static double MAX_TRAVEL = 4000;     // old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
         public static double HOLD_SPEED = 200;       // Maximum speed
@@ -51,8 +51,9 @@ public class ConfigVar {
         public static double MIN_HEIGHT = 100.0D;
         public static double SP_PRE_PICK = 1300.0D; //
         public static double SP_PICK = 690.0D;      //
-        public static double SP_PLACE = 3850.0D;
+        public static double SP_PLACE = 3950.0D;
         public static double SA_HOME = 500.0D;
+        public static double SA_PRE_PICK = 250;
 
         // Predefined positions ( would this even work??)
         /*
@@ -76,7 +77,7 @@ public class ConfigVar {
         public static double GRIPPER_MAX = 300;
         public static double GRIPPER_SPEED = 100;
         public static double gripperOpened = 35;
-        public static double gripperClosed= 90;
+        public static double gripperClosed= 105;
 
         public static double HANDLER_MIN = -90;
         public static double HANDLER_MAX = +90;
@@ -91,13 +92,15 @@ public class ConfigVar {
         public static double transferSpCoop = 280;
 
         public static double POLE_MIN = 0;
-        public static double POLE_MAX = 300;
+        public static double POLE_MAX = 180;
         public static double POLE_SPEED = 100;
         public static double poleSpPick = 20;
         public static double poleSpPlace = 180;
-        public static double poleSaPrePick = 160;
-        public static double poleSaPick = 170;
-        public static double poleHome = 180;
+        public static double poleSaPrePick = 120;
+        public static double poleSaPick = 150;
+        public static double poleHome = 65;
+        public static double poleIdle = 20;
+        public static double poleSaPlace = 50;
 
         public static double TURNER_MIN = 0;
         public static double TURNER_MAX = 1800;

@@ -37,7 +37,6 @@ public void initialize()
         sliderDev = new SliderDev(hardware);
         mecanumDev = new MecanumDev(hardware);
         tm = new ElapsedTime();
-
         gripperArm = new ArmDev( hardware.gripperServo, ConfigVar.ArmCfg.GRIPPER_SPEED);
         handlerArm = new ArmDev(hardware.handlerServo, ConfigVar.ArmCfg.HANDLER_SPEED);
         poleArm = new ArmDev(hardware.poleServo, ConfigVar.ArmCfg.POLE_SPEED );
@@ -54,7 +53,6 @@ public void initialize()
         rgbSensor = new RGBSensor( hardware );
         tm.startTime();
     } catch (Exception e) {
-
         throw new RuntimeException(e);
     }
 }
@@ -84,42 +82,50 @@ public void setHomePositions()
 void processAllSystems()
 {
     mecanumDev.execute();
-   sliderDev.execute();
-   gripperArm.execute();
-   handlerArm.execute();
-   poleArm.execute();
-   transferArm.execute();
-   turnerArm.execute();
+    sliderDev.execute();
+    gripperArm.execute();
+    handlerArm.execute();
+    poleArm.execute();
+    transferArm.execute();
+    turnerArm.execute();
 }
 
-enum CagePrePick { cageIdle, cagePick1,cagePick2, cagePick3, cagePick4 };
+enum CagePrePick { cageIdle, cagePick1,cagePick2, cagePick3, cagePick4, cagePick5, cagePick6, cagePick7 };
 CagePrePick cagePrePick = CagePrePick.cageIdle;
 public void prePickSACage(){
     switch ( cagePrePick ) {
         case cageIdle:
-            // Check all servo's are ready
-            if (!gamepad2.dpad_left || sliderDev.notReady() || gripperArm.notReady()  || poleArm.notReady()) break;
+            if (!gamepad2.square || sliderDev.notReady() || gripperArm.notReady()  || poleArm.notReady()) break;
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
+            sliderDev.moveTo(ConfigVar.Slider.SA_HOME);
             cagePrePick = CagePrePick.cagePick1;
             break;
         case cagePick1:
-            if (sliderDev.notReady() || gripperArm.notReady()  || poleArm.notReady()) break;
-            sliderDev.moveTo(ConfigVar.Slider.SA_HOME);
-            // Set status for next step in sequence
             cagePrePick = CagePrePick.cagePick2;
-            break;
         case cagePick2:
             if (sliderDev.notReady() || gripperArm.notReady()  || poleArm.notReady()) break;
             poleArm.moveTo(ConfigVar.ArmCfg.poleSaPrePick);
             cagePrePick = CagePrePick.cagePick3;
+            break;
         case cagePick3:
+            if (sliderDev.notReady() || gripperArm.notReady()  || poleArm.notReady()) break;
+            sliderDev.moveTo(ConfigVar.Slider.SA_PRE_PICK);
+            cagePrePick = CagePrePick.cagePick4;
+        case cagePick4:
             if (poleArm.notReady() || gripperArm.notReady() || sliderDev.notReady()) break;
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
-            cagePrePick = CagePrePick.cagePick4;
+            cagePrePick = CagePrePick.cagePick5;
             break;
-        case cagePick4:
-            if ( !gamepad2.dpad_left && ( poleArm.notReady() || gripperArm.notReady())) break;
-            poleArm.moveTo(ConfigVar.ArmCfg.poleHome);
+        case cagePick5:
+            if ( !gamepad2.square || poleArm.notReady() || gripperArm.notReady() ) break;
+            gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
+            //poleArm.moveTo(ConfigVar.ArmCfg.poleHome);
+            cagePrePick = CagePrePick.cagePick6;
+            break;
+        case cagePick6:
+            if (poleArm.notReady() || gripperArm.notReady() || sliderDev.notReady()) break;
+            sliderDev.moveTo(3800);
+            poleArm.moveTo(ConfigVar.ArmCfg.poleSaPlace);
             cagePrePick = CagePrePick.cageIdle;
             break;
     }
@@ -132,7 +138,7 @@ public void pickSACage()
     switch ( cagePick ) {
         case cagePickIdle:
             // Check all servo's are ready
-            if (!gamepad2.dpad_right || gripperArm.notReady() || poleArm.notReady()) break;
+            if (!gamepad2.circle || gripperArm.notReady() || poleArm.notReady()) break;
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
             cagePick = CagePick.cageGripper;
             break;
@@ -155,8 +161,9 @@ public void pickSACage()
     }
 }
 
-enum PickUSample {pickIdle, pickStart, pickFlip, pickTransfer, pickPreGrab,pickGrab, pickSliderUp, pickPolePlace, pickToIdle }
-PickUSample pickUpSample = PickUSample.pickIdle;
+//enum PickUSample {pickIdle, pickStart, pickFlip, pickTransfer, pickPreGrab,pickGrab, pickSliderUp, pickPolePlace, pickToIdle }
+    enum PickSample { pickIdle, pickSP1 ,pickSP2, pickSP3, pickSP4, pickSP5, pickSP6, pickSP7, pickSP8, pickSP9 }
+PickSample pickUpSample = PickSample.pickIdle;
 
 /*
 This method implements the sequence to use SliderArm, handlerArm, transferArm, turnerArm and colorSensor
@@ -168,60 +175,63 @@ public void pickSpecimen()
     {
         case pickIdle:
             // Check all servo's are ready
-            if( !gamepad2.dpad_up || sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady() || turnerArm.notReady() ) break;
-            // Set status for next step in sequence
-            pickUpSample = PickUSample.pickStart;
+            if( !gamepad2.triangle || sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady() || turnerArm.notReady() ) break;
+            sliderDev.moveTo( ConfigVar.Slider.SA_HOME);
+            pickUpSample = PickSample.pickSP1;
+            break;
+        case pickSP1:
+            if( poleArm.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerOpened); // Open gripper
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
             poleArm.moveTo(ConfigVar.ArmCfg.poleSaPrePick);
             sliderDev.moveTo(ConfigVar.Slider.SP_PRE_PICK ); // Move slider to pre-pick position ( retracted up)
+            pickUpSample = PickSample.pickSP2;
             break;
-        case pickStart:
+        case pickSP2:
             if( poleArm.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
-            // Set status for next step in sequence
-            pickUpSample = ( rgbSensor.getColorValue() != RGBSensor.ColorValue.blackValue )? PickUSample.pickFlip : PickUSample.pickTransfer;
+            pickUpSample = ( rgbSensor.getColorValue() != RGBSensor.ColorValue.blackValue )? PickSample.pickSP3 : PickSample.pickSP4;
             break;
-        case pickFlip:
+        case pickSP3: // Flip Turner
             if( transferArm.notReady() ) break;
             turnerArm.moveTo(ConfigVar.ArmCfg.turnerFlipped); // Flip the sample
             // Set status for next step in sequence
-            pickUpSample = PickUSample.pickTransfer;
+            pickUpSample = PickSample.pickSP4;
             break;
-        case pickTransfer:
+        case pickSP4:
             if( turnerArm.notReady() || transferArm.notReady() ) break;
             transferArm.moveTo(ConfigVar.ArmCfg.transferSpCoop);
             // Set status for next step in sequence
-            pickUpSample = PickUSample.pickPreGrab;
+            pickUpSample = PickSample.pickSP5;
             break;
-        case pickPreGrab:
+        case pickSP5:
             if( transferArm.notReady() ) break;
             sliderDev.moveTo(ConfigVar.Slider.SP_PICK );
             // We can also move the Turner back in Idle position
             turnerArm.moveTo(ConfigVar.ArmCfg.turnerIdle);
             // Set status for next step in sequence
-            pickUpSample = PickUSample.pickGrab;
+            pickUpSample = PickSample.pickSP6;
             break;
-        case pickGrab:
+        case pickSP6:
             if( sliderDev.notReady() || turnerArm.notReady() ) break; // Wait slider to complete it's move
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
             // Set status for next step in sequence
-            pickUpSample = PickUSample.pickSliderUp;
+            pickUpSample = PickSample.pickSP7;
             break;
-        case pickSliderUp:
+        case pickSP7:
             if( sliderDev.notReady() || handlerArm.notReady()) break; // Wait slider to complete it's move
             sliderDev.moveTo(ConfigVar.Slider.SP_PLACE );
-            pickUpSample = PickUSample.pickPolePlace;
+            pickUpSample = PickSample.pickSP8;
             break;
-        case pickPolePlace:
+        case pickSP8:
             if( !gamepad2.dpad_up && sliderDev.notReady() ) break; // Wait slider to complete it's move
             poleArm.moveTo(ConfigVar.ArmCfg.poleSpPlace );
-            pickUpSample = PickUSample.pickToIdle;
-        case pickToIdle:
+            pickUpSample = PickSample.pickSP9;
+        case pickSP9:
             if( poleArm.notReady() ) break; // Wait for handler to grab the sample
             // Return the transferArm to pre-coop position
             transferArm.moveTo(ConfigVar.ArmCfg.transferSpPreCoop);
             // All pickSample operation completed - go back to Idle
-            pickUpSample = PickUSample.pickIdle;
+            pickUpSample = PickSample.pickIdle;
             break;
     }
 }
@@ -240,14 +250,14 @@ public void runOpMode() throws InterruptedException
     while ( opModeIsActive() )
     {
         // mecanumDev moves manual according to joystick inputs
-        mecanumDev.jogMoveXYR(gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x);
+        mecanumDev.jogMoveXYR(gamepad1.left_stick_x, -gamepad1.left_stick_y,-gamepad1.right_stick_x);
         // Slider moves manual according to joystick inputs when not in pick sample process
-        if( pickUpSample == PickUSample.pickIdle && cagePrePick == CagePrePick.cageIdle && cagePick == CagePick.cagePickIdle ) sliderDev.moveJog( -gamepad2.left_stick_y );
+        if( pickUpSample == PickSample.pickIdle && cagePrePick == CagePrePick.cageIdle && cagePick == CagePick.cagePickIdle ) sliderDev.moveJog( -gamepad2.left_stick_y );
         // Run Pick Up Sample Sequence
         pickSpecimen();
         prePickSACage();
         pickSACage();
-
+        if(gamepad2.dpad_left) gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
         // Time quanta
         dT = tm.milliseconds();
         tm.reset();
@@ -259,15 +269,15 @@ public void runOpMode() throws InterruptedException
         int blue = hardware.colorSensor.blue();
         int green = hardware.colorSensor.green();
 
-        telemetry.addData("red", hardware.colorSensor.red());
-        telemetry.addData("green", hardware.colorSensor.green());
-        telemetry.addData("blue", hardware.colorSensor.blue());
+//        telemetry.addData("red", hardware.colorSensor.red());
+//        telemetry.addData("green", hardware.colorSensor.green());
+//        telemetry.addData("blue", hardware.colorSensor.blue());
 
-        telemetry.addData("sliderState:", sliderDev.Status);
+        telemetry.addData("sliderSts:", sliderDev.Status);
         telemetry.addData("trgPos:", sliderDev.targetPos);
         telemetry.addData("actSpeed:", sliderDev.getActSpeed());
-        telemetry.addData("spSpeed:", sliderDev.getSpSpeed());
-        telemetry.addData("actPos:", sliderDev.getActPosition());
+//        telemetry.addData("spSpeed:", sliderDev.getSpSpeed());
+//        telemetry.addData("actPos:", sliderDev.getActPosition());
 
 
         //telemetry.addData("Status:", cagePickUp );
@@ -285,8 +295,9 @@ public void runOpMode() throws InterruptedException
         //telemetry.addData("StsSample:", pickUpSample );
         telemetry.addData("dT:", sliderDev.dT);
   */
-        telemetry.addData("transf.:", transferArm.isReady());
+
         telemetry.addData("turner:", turnerArm.isReady());
+        telemetry.addData("transf.:", transferArm.isReady());
         telemetry.addData("handler:", handlerArm.isReady());
         telemetry.addData("gripper:", gripperArm.isReady());
         telemetry.addData("pole:", poleArm.isReady());

@@ -51,6 +51,7 @@ public class SliderDev{
     private double maxAccel = 0;
     private PIDControl pidSlider1;    // PID controller to drive the speed of the slider
     public double sliderPower;         // Power slider 1
+    public double joystickValue;
 
     private final ElapsedTime tm = new ElapsedTime();    // Timer
     EMAFilter emaSpeed = new EMAFilter();
@@ -65,7 +66,6 @@ public class SliderDev{
         tm.startTime();
         tm.reset();
         pidSlider1.setMaxOut(1);
-
     }
 
 
@@ -84,7 +84,6 @@ public class SliderDev{
      */
     public void execute()
     {
-        double targetSpeedRaw;
          //  ** tagetPosition and target Speed are set in the MoveTo and ManualMove method
         dT = tm.milliseconds(); // Timer interval between two consecutive app scans
         if( dT < 3.0 /* 3 millisecond sampling time*/ ) return; // Sampling time is 1 millisecond
@@ -95,28 +94,29 @@ public class SliderDev{
         // Calculate the actual speed of the slider v = ( X-Xo )/(T-To) and filer it with an EMA filter
         actSpeed = emaSpeed.filter( (actPos - prevPos)/dT , ConfigVar.Slider.EMA_FILTER/*EMA-Coeficient*/);
         prevPos = actPos;
-        softLimits();   // Check we did not reached travel limits
         // Speed control depends on Status of the slider
         switch( Status )
         {
             case sliderReady: // While in Ready state it holds current position with HOLD_SPEED
-
-                // Proportional ( POS_KP ) position controller with limiter of speed to targetSpeed
-                // Estimate the max speed deviation
-                //maxAccel = ConfigVar.Slider.MAX_ACCEL * dT;
-                //targetSpeedRaw = Limiter( (targetPos - actPos) * POS_KP, targetSpeed);
-                //spSpeed += Limiter(targetSpeedRaw,maxAccel);
-                spSpeed = Limiter( (( targetPos - actPos ) * POS_KP) , targetSpeed);
+                if( Math.abs(joystickValue) > 0 ){  Status = SliderStatus.sliderMoveJog; }
+                spSpeed = limitValue( (( targetPos - actPos ) * POS_KP) , targetSpeed);
                 break;
             case sliderMoveJog: // While in JOG state it just passed targetSpeed from Joystick ( well with some gains - see MoveJog method)
-                spSpeed = targetSpeed;  // We only control speed
-                targetPos = actPos;     // ensure that when exiting JOG the controller maintain current position
+                if( Math.abs(joystickValue) > 0 )
+                {
+                    // When joystick is out of rest we only speed control ( no position control ) ...
+                    spSpeed = targetSpeed = joystickValue * STICK_GAIN * JOG_SPEED; // set targetSpeed as JOG_SPEED. Adjust STICK_GAIN if required
+                    break;
+                }
+                // While joystick is in rest , set position as actual position and then HOLD current position
+                targetPos = actPos;
+                spSpeed = targetSpeed = HOLD_SPEED; // Only control speed
+                Status = SliderStatus.sliderReady;
                 break;
             case sliderMoveAuto: // While in Auto state it sets the speed according to targetSpeed and position error but goes to Ready when position window is reached
-                spSpeed = Limiter( (( targetPos - actPos ) * POS_KP) , targetSpeed);
+                spSpeed = limitValue( (( targetPos - actPos ) * POS_KP) , targetSpeed);
                 if( inPosition() )
                 {
-                    // Set-point speed to HOLD_SPEED
                     targetSpeed = HOLD_SPEED;
                     Status = SliderStatus.sliderReady;
                 }
@@ -134,47 +134,30 @@ public class SliderDev{
     {
         targetPos = actPos;
         targetSpeed = HOLD_SPEED;
-    }
-    //  Method: softLimits ** Stops executing move when travel limits are reached
-    void softLimits()
-    {
-        if( targetSpeed > HOLD_SPEED )
-        {
-            if (actPos > MAX_HEIGHT)
-            {
-                targetPos = MAX_HEIGHT - 20;
-                targetSpeed = HOLD_SPEED;
-                Status = SliderStatus.sliderReady;
-            }
-            if (actPos < MIN_HEIGHT) {
-                targetPos = MIN_HEIGHT + 20;
-                targetSpeed = HOLD_SPEED;
-                Status = SliderStatus.sliderReady;
-            }
-        }
+        Status = SliderStatus.sliderReady;
     }
 
     // Method: Limiter ** Returns a value of inputValue but that do not exceeds (-maxValue, +maxValue)
-    private double  Limiter( double inputValue, double maxValue )
+    private double  limitValue( double inputValue, double maxValue )
     {
         return ( Math.max(-maxValue, Math.min(inputValue, maxValue)));
     }
     // Method: Limiter ** Returns a value of inputValue but that do not exceeds (-maxValue, +maxValue)
-    private double  Limiter( double inputValue, double minValue, double maxValue )
+    private double  limitValue( double inputValue, double minValue, double maxValue )
     {
         return ( Math.max(minValue, Math.min(inputValue, maxValue)));
     }
     //   Method: MoveTo ** Request to move the sliders to specified position
     public void moveTo( double trgPos, double trgSpeed)
     {
-        targetPos = Limiter( trgPos, MIN_HEIGHT, MAX_HEIGHT );
+        targetPos = limitValue( trgPos, MIN_HEIGHT, MAX_HEIGHT );
         targetSpeed = trgSpeed;
         Status = SliderStatus.sliderMoveAuto;
     }
     // Method: moveTo **  This method starts the move with JOG_SPEED
-    public void moveTo( double trgPos )
+    public void moveTo( double trgPos  )
     {
-        targetPos = Limiter( trgPos, MIN_HEIGHT, MAX_HEIGHT );
+        targetPos = limitValue( trgPos, MIN_HEIGHT, MAX_HEIGHT );
         targetSpeed = ConfigVar.Slider.JOG_SPEED;
         Status = SliderStatus.sliderMoveAuto;
     }
@@ -182,9 +165,7 @@ public class SliderDev{
     public void moveTo( String trgPos, String trgSpeed )
     {
         if(trgPos == null || trgSpeed == null ) return;
-
-        ;
-        targetPos = (trgPos != "NOP")?Limiter( Double.parseDouble(trgPos), 0, MAX_TRAVEL ):targetPos;
+        targetPos = (trgPos != "NOP")?limitValue( Double.parseDouble(trgPos), 0, MAX_TRAVEL ):targetPos;
         targetSpeed = ( trgSpeed != "NOP")? Double.parseDouble(trgSpeed):targetSpeed;
         Status = SliderStatus.sliderMoveAuto;
     }
@@ -197,31 +178,8 @@ public class SliderDev{
     public void moveJog( double stickSlider )
     {
         // TODO targetPos = ( stickExpo(stickSlider) < -STICK_DEAD_ZONE )? -MAX_TRAVEL : (stickExpo(stickSlider) > STICK_DEAD_ZONE )? + MAX_TRAVEL : 0;
-        switch (Status )
-        {
-            case sliderReady:
-                if( Math.abs(stickSlider) > 0 )
-                {
-                    targetSpeed = stickSlider * STICK_GAIN * JOG_SPEED; // set targetSpeed as JOG_SPEED. Adjust STICK_GAIN if required
-                    Status = SliderStatus.sliderMoveJog;
-                }
-            case sliderMoveJog:
-                if( Math.abs(stickSlider) > 0 )
-                {
-                    // When joystick is out of rest we only speed control ( no position control ) ...
-                    targetSpeed = stickSlider * STICK_GAIN * JOG_SPEED; // set targetSpeed as JOG_SPEED. Adjust STICK_GAIN if required
-                    Status = SliderStatus.sliderMoveJog;
-                }else
-                {
-                    // While joystick is in rest , set position as actual position and then HOLD current position
-                    targetPos = actPos;
-                    targetSpeed = HOLD_SPEED;
-                    Status = SliderStatus.sliderReady;
-                }
-                break;
-            case sliderMoveAuto: break; // Do nothing here while sliders are doing sequences
-        }
-   }
+        joystickValue = ( Math.abs(stickSlider) > STICK_DEAD_ZONE)? stickSlider : 0;
+    }
     // Method: inPosition ** Returns true if slider reached the target position
     public boolean inPosition(){ return (Math.abs( targetPos-actPos ) < IN_WINDOW); }
 

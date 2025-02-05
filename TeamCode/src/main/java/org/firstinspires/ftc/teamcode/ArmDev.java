@@ -76,7 +76,7 @@ public class ArmDev
     enum  ServoState {servoReady, servoMove}; // Status of ArmDev object
     private String gIndex;  // Index number used in the R-Code parser
     //    ConfigVar configVar;
-    private ServoState state = ServoState.servoReady;    // Current status of the servo
+    public ServoState state = ServoState.servoReady;    // Current status of the servo
     public double actPos;       // Actual position with range Min .. Max
     public double trgPos;       // Target position ( set-point position)
     private double prevPos;      // prev position

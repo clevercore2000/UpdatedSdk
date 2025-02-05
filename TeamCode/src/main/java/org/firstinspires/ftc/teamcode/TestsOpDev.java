@@ -28,6 +28,7 @@ public class TestsOpDev extends LinearOpMode
     ToggleButton transferToggle;
     ToggleButton turnerToggle;
     ToggleButton poleToggle;
+    double polePos;
     public void initialize()
     {
         // ... initialization logic ...
@@ -60,12 +61,10 @@ public class TestsOpDev extends LinearOpMode
     {
         // .. Set Home/Idle positions of all systems ...
         mecanumDev.Initialize();
-
         // sliderDev.Status = SliderDev.SliderStatus.SilderMoveJog;
 
         gripperArm.setRange(ConfigVar.ArmCfg.GRIPPER_MIN, ConfigVar.ArmCfg.GRIPPER_MAX);
 //    gripperArm.moveTo( ConfigVar.ArmCfg.gripperOpened);
-
         handlerArm.setRange(ConfigVar.ArmCfg.HANDLER_MIN, ConfigVar.ArmCfg.HANDLER_MAX);
 //    handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed);
 
@@ -73,11 +72,9 @@ public class TestsOpDev extends LinearOpMode
         transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop);
 
         poleArm.setRange(ConfigVar.ArmCfg.POLE_MIN,ConfigVar.ArmCfg.POLE_MAX);
-//    poleArm.moveTo( ConfigVar.ArmCfg.poleHome);
-
+        poleArm.moveTo( ConfigVar.ArmCfg.poleIdle);
         turnerArm.setRange(ConfigVar.ArmCfg.TURNER_MIN,ConfigVar.ArmCfg.TURNER_MAX);
 //        turnerArm.moveTo( ConfigVar.ArmCfg.turnerIdle);
-
     }
 
     void processAllSystems()
@@ -107,8 +104,9 @@ public class TestsOpDev extends LinearOpMode
             mecanumDev.jogMoveXYR(gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x);
             // Slider moves manual according to joystick inputs when not in pick sample process
             //sliderDev.moveJog( -gamepad2.left_stick_y );
-            // Run Pick Up Sample Sequence
-            if(  gripperToggle.Toggle(gamepad2.dpad_up) )
+
+            gripperToggle.Toggle(gamepad2.dpad_up);
+            if(  gripperToggle.reState )
                 sliderDev.moveTo( 1500 );
             else
                 sliderDev.moveTo( 750 );
@@ -119,22 +117,31 @@ public class TestsOpDev extends LinearOpMode
         else
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened );
 */
-        if(handleToggle.Toggle(gamepad2.dpad_left))
+
+        handleToggle.Toggle(gamepad2.dpad_left);
+        if(handleToggle.reState)
             handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed );
         else
             handlerArm.moveTo( ConfigVar.ArmCfg.handlerOpened );
 
-        if( poleToggle.Toggle(gamepad2.dpad_down ))
-            poleArm.moveTo( ConfigVar.ArmCfg.poleSaPick);
-        else
+        poleToggle.Toggle(gamepad2.dpad_down );
+        if( poleToggle.reState ){
+            poleArm.moveTo( ConfigVar.ArmCfg.poleIdle);
+            polePos = ConfigVar.ArmCfg.poleIdle;
+        }
+        else {
             poleArm.moveTo(ConfigVar.ArmCfg.poleSaPrePick);
+            polePos = ConfigVar.ArmCfg.poleSaPrePick;
+        };
 
-        if( transferToggle.Toggle(gamepad2.circle) )
+        transferToggle.Toggle(gamepad2.circle);
+        if( transferToggle.reState )
             transferArm.moveTo(ConfigVar.ArmCfg.transferSpCoop);
         else
             transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop );
 
-        if( turnerToggle.Toggle(gamepad2.triangle) )
+        turnerToggle.Toggle(gamepad2.triangle);
+        if( turnerToggle.reState )
             turnerArm.moveTo(ConfigVar.ArmCfg.turnerIdle);
         else
             turnerArm.moveTo(ConfigVar.ArmCfg.turnerFlipped);
@@ -154,11 +161,9 @@ public class TestsOpDev extends LinearOpMode
         telemetry.addData("blue", hardware.colorSensor.blue());
 */
         telemetry.addData("sliderState:", sliderDev.isReady());
-        telemetry.addData("actSpeed:", sliderDev.getActSpeed());
-        telemetry.addData("spSpeed:", sliderDev.getSpSpeed());
         telemetry.addData("actPos", sliderDev.getActPosition());
         telemetry.addData("trgPos:", sliderDev.targetPos);
-
+        telemetry.addData("Pole", polePos );
 
         // telemetry.addData("transf.:", transferArm.isReady());
         // telemetry.addData("turner:", turnerArm.isReady());
