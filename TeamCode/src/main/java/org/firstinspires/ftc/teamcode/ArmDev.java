@@ -122,7 +122,7 @@ public class ArmDev
     // Returns actual servo position in ArmDev range units minRange ... maxRange
     double getActPos()
     {
-        return ( (servo.getPosition()*( maxRange -minRange )) / /*(in_max-in_min)*/ + minRange );
+        return ( (servo.getPosition()*( maxRange-minRange )) / /*(in_max-in_min)*/ + minRange );
     }
 
     // Method: moveTo

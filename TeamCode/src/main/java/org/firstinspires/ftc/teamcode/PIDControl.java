@@ -51,13 +51,26 @@ double calulate()
     // Calculate total output
     out = ( Kp * err ) + ( Ki*di ) + (Kd * dv );
     // Apply limiter
-    out = Math.max( -maxOut, Math.min(maxOut,out));
+    out = Math.max( -1, Math.min(out,1));
     return out;
 }
 
 double calculate( double pid_sp, double pid_pv)
 {
     sp = pid_sp; pv = pid_pv;
-    return calulate();
+    dT = tm.milliseconds()/1E3;
+    tm.reset();
+    // Error
+    err = sp - pv;
+    // Integral term
+    di += err * dT;
+    // Derivative term
+    dv = (err - perr )/dT;
+    perr = err;
+    // Calculate total output
+    out = ( Kp * err ) + ( Ki*di ) + (Kd * dv );
+    // Apply limiter
+    //out = Math.max( -1, Math.min(out,1));
+    return out;
 }
 }

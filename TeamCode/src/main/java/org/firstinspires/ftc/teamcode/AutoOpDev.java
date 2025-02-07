@@ -90,10 +90,10 @@ public class AutoOpDev extends LinearOpMode
             // Instantiate all robot objects
             mecanumDev = new MecanumDev(hardware);
             sliderDev = new SliderDev( hardware);
-            gripperArm = new ArmDev( hardware.gripperServo, g1GripperArm, 200);
-            handlerArm = new ArmDev( hardware.handlerServo, g2HandlerArm, 200);
-            transferArm = new ArmDev(hardware.transferServo, g3Transfer, 200);
-            poleArm = new ArmDev( hardware.poleServo, g4PoleArm, 200);
+            gripperArm = new ArmDev( hardware.gripperServo, g1GripperArm, ConfigVar.ArmCfg.GRIPPER_SPEED);
+            handlerArm = new ArmDev( hardware.handlerServo, g2HandlerArm, ConfigVar.ArmCfg.HANDLER_SPEED);
+            transferArm = new ArmDev(hardware.transferServo, g3Transfer, ConfigVar.ArmCfg.TRANSFER_SPEED);
+            poleArm = new ArmDev( hardware.poleServo, g4PoleArm, ConfigVar.ArmCfg.POLE_SPEED);
             tm = new ElapsedTime();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -102,7 +102,7 @@ public class AutoOpDev extends LinearOpMode
         mecanumDev.Initialize();
 
         gripperArm.setRange(ConfigVar.ArmCfg.GRIPPER_MIN, ConfigVar.ArmCfg.GRIPPER_MAX);
-        gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
+        //gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
 
         handlerArm.setRange(ConfigVar.ArmCfg.HANDLER_MIN, ConfigVar.ArmCfg.HANDLER_MAX);
         transferArm.setRange(ConfigVar.ArmCfg.TRANSFER_MIN, ConfigVar.ArmCfg.TRANSFER_MAX);

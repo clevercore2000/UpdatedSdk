@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //@SliderDrive
@@ -14,7 +15,7 @@ public class SliderDev{
      */
     Hardware hardware;
     ConfigVar configVar;
-
+//    PIDController pidController;
     // Joystick EXPO factor {0,..,1}
     public double STICK_EXPO = ConfigVar.Slider.STICK_EXPO;
     // Position and Speed PI-Controller parameters
@@ -42,10 +43,10 @@ public class SliderDev{
 
     public enum SliderStatus {sliderReady, sliderMoveJog, sliderMoveAuto }  // Status of the slider
     public SliderStatus Status = SliderStatus.sliderReady;
-    private double actPos = HOME_POS;           // Actual position
+    public double actPos = HOME_POS;           // Actual position
     private double prevPos = 0;          // Preview position
     public double actSpeed = 0;         // Actual Speed
-    private double spSpeed = 0;         // Set-Point speed ( input for the speed control loop)
+    public double spSpeed = 0;         // Set-Point speed ( input for the speed control loop)
     public double targetPos = 0.0D;     // Target position
     private double targetSpeed = 0.0D;   // Target speed
     private double maxAccel = 0;
@@ -58,14 +59,18 @@ public class SliderDev{
     EMAFilter emaPos = new EMAFilter();
     public double dT;                  // Time quanta between execute() method calls
     // Constructor
+    public  double sspSpeed;
+
     public SliderDev(Hardware hw)
     {
         hardware = hw;
         configVar = new ConfigVar();
         pidSlider1 = new PIDControl(SPEED_KP, SPEED_KI,SPEED_KD);
+        //pidController = new PIDController(SPEED_KP, SPEED_KI,SPEED_KD);
+        pidSlider1.setMaxOut(1);
         tm.startTime();
         tm.reset();
-        pidSlider1.setMaxOut(1);
+
     }
 
 
@@ -87,10 +92,10 @@ public class SliderDev{
          //  ** tagetPosition and target Speed are set in the MoveTo and ManualMove method
         dT = tm.milliseconds(); // Timer interval between two consecutive app scans
         if( dT < 3.0 /* 3 millisecond sampling time*/ ) return; // Sampling time is 1 millisecond
-        dT /= 1000; // Convert to seconds from now on
+        dT /= 1000.0; // Convert to seconds from now on
         tm.reset(); // Restart clock for the next sample tm
         // Read actual position of the Slider
-        actPos = hardware.sliderMotor1.getCurrentPosition();
+        actPos = emaPos.filter( hardware.sliderMotor1.getCurrentPosition(), 0.4);
         // Calculate the actual speed of the slider v = ( X-Xo )/(T-To) and filer it with an EMA filter
         actSpeed = emaSpeed.filter( (actPos - prevPos)/dT , ConfigVar.Slider.EMA_FILTER/*EMA-Coeficient*/);
         prevPos = actPos;
@@ -105,7 +110,7 @@ public class SliderDev{
                 if( Math.abs(joystickValue) > 0 )
                 {
                     // When joystick is out of rest we only speed control ( no position control ) ...
-                    spSpeed = targetSpeed = joystickValue * STICK_GAIN * JOG_SPEED; // set targetSpeed as JOG_SPEED. Adjust STICK_GAIN if required
+                    spSpeed = joystickValue * STICK_GAIN * JOG_SPEED; // set targetSpeed as JOG_SPEED. Adjust STICK_GAIN if required
                     break;
                 }
                 // While joystick is in rest , set position as actual position and then HOLD current position
@@ -122,8 +127,11 @@ public class SliderDev{
                 }
                 break;
         }
+
+        //sliderPower = limitValue(pidController.calculate(actSpeed,spSpeed),1);
         // Calculate required power to DC Motors using PID Control
-        sliderPower = pidSlider1.calculate(spSpeed,actSpeed);
+        sspSpeed = spSpeed;
+        sliderPower = pidSlider1.calculate( spSpeed,actSpeed );
         // Apply calculated control value to Slider
         hardware.sliderMotor1.setPower(sliderPower);
         hardware.sliderMotor2.setPower(sliderPower);

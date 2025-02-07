@@ -238,7 +238,6 @@ public class MecanumDev// extends Thread
             targetSpeedXY = Double.parseDouble(targetSpe);
         }
 
-
         Status = MecanumStatus.MecanumMoveAuto;
         return true;
     }

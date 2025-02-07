@@ -27,17 +27,16 @@ public class ConfigVar {
     }
     @Config
     public static class Slider{
-
         // Joystick EXPO factor {0,..,1}
         public static double STICK_EXPO = 0.0D;
         // Position and Speed PI-Controller parameters
-        public static double POS_KP = 15.0D;    // Position PID - proportional coefficient
+        public static double POS_KP = 10.0D;    // Position PID - proportional coefficient
         public static double SPEED_KP = 0.001D;      // Speed PID - proportional coefficient
-        public static double SPEED_KI = 0.0001D;     // Speed PID - Integrator coefficient
-        public static double SPEED_KD = 0.02;       // Speed PID - Derivative coefficient
-        public static double IN_WINDOW = 30;
+        public static double SPEED_KI = 0.00001D;     // Speed PID - Integrator coefficient
+        public static double SPEED_KD = 0.00001D;       // Speed PID - Derivative coefficient
+        public static double IN_WINDOW = 50;
         public static double MAX_TRAVEL = 4000;     // old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
-        public static double HOLD_SPEED = 200;       // Maximum speed
+        public static double HOLD_SPEED = 30;       // Maximum speed
         public static double MAX_ACCEL = 500;
         public static double MAX_POWER = 1.0D;
         public static double MAX_SPEED = 1700; // Encoder-ticks/sec
@@ -46,14 +45,14 @@ public class ConfigVar {
         //  * uses logistic function to generate a setpoint signal for the speed controller
         public static double STICK_DEAD_ZONE = 0.0D;
         public static double STICK_GAIN =  1.0D;  // Joystick input value
-        public static double JOG_SPEED = 1700.0D;
+        public static double JOG_SPEED = 2000.0D;
         public static double MAX_HEIGHT = 3900.0D;
         public static double MIN_HEIGHT = 100.0D;
-        public static double SP_PRE_PICK = 1300.0D; //
-        public static double SP_PICK = 690.0D;      //
+        public static double SP_PRE_PICK = 1200.0D; //
+        public static double SP_PICK = 380.0D;      //
         public static double SP_PLACE = 3950.0D;
         public static double SA_HOME = 500.0D;
-        public static double SA_PRE_PICK = 250;
+        public static double SA_PRE_PICK = 450;
 
         // Predefined positions ( would this even work??)
         /*
@@ -66,8 +65,8 @@ public class ConfigVar {
     }
     @Config
     public static class Odometry{
-        public static double ENCODER_TICKS_PER_REV = 8192;
-        public static double WHEEL_RADIUS = 104;
+        public static double ENCODER_TICKS_PER_REV = 384.5;
+        public static double WHEEL_DIAM = 104;
         public static double WHEEL_SEPARATION_WIDTH = 413.7;
         public static double WHEEL_SEPARATION_LENGTH = 336;
     }
@@ -88,14 +87,15 @@ public class ConfigVar {
         public static double TRANSFER_MIN = 0;
         public static double TRANSFER_MAX = 300;
         public static double TRANSFER_SPEED = 100;
-        public static double transferSpPreCoop = 20;
+        public static double transferSpPreCoop = 0;
         public static double transferSpCoop = 280;
 
         public static double POLE_MIN = 0;
         public static double POLE_MAX = 180;
         public static double POLE_SPEED = 100;
         public static double poleSpPick = 20;
-        public static double poleSpPlace = 180;
+        public static double poleSpPrePick = 100;
+        public static double poleSpPlace = 10;
         public static double poleSaPrePick = 120;
         public static double poleSaPick = 150;
         public static double poleHome = 65;
@@ -107,5 +107,18 @@ public class ConfigVar {
         public static double TURNER_SPEED = 100;
         public static double turnerIdle = 1000;
         public static double turnerFlipped = 340;
+    }
+
+    @Config
+    public static class PullUp{
+
+        public static double motorPower = 0.7;
+
+        public static double PULL_MIN = 0;
+        public static double PULL_MAX = 180;
+        public static double PULL_SPEED = 100;
+        public static double servoIdle = 45;
+        public static double servoPullPos = 25;
+
     }
 }

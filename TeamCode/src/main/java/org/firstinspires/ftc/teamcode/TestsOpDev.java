@@ -100,48 +100,38 @@ public class TestsOpDev extends LinearOpMode
         setHomePositions();
         while (opModeIsActive())
         {
-            // mecanumDev moves manual according to joystick inputs
-            mecanumDev.jogMoveXYR(gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x);
-            // Slider moves manual according to joystick inputs when not in pick sample process
-            //sliderDev.moveJog( -gamepad2.left_stick_y );
+            // mecanumDev.MoveRTo( 100, 0.1);
 
-            gripperToggle.Toggle(gamepad2.dpad_up);
-            if(  gripperToggle.reState )
-                sliderDev.moveTo( 1500 );
-            else
-                sliderDev.moveTo( 750 );
-            // Use joystick only for tests/debugging the systems
-/*
-        if(  gripperToggle.Toggle(gamepad2.dpad_up) )
+            // mecanumDev moves manual according to joystick inputs
+//            mecanumDev.jogMoveXYR(gamepad1.left_stick_x, gamepad1.left_stick_y,-gamepad1.right_stick_x);
+            // Slider moves manual according to joystick inputs when not in pick sample process
+            sliderDev.moveJog( -gamepad2.left_stick_y );
+
+        if( gripperToggle.Toggle( gamepad2.dpad_up)  )
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed );
         else
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened );
-*/
 
-        handleToggle.Toggle(gamepad2.dpad_left);
-        if(handleToggle.reState)
+        if(handleToggle.Toggle(gamepad2.dpad_left))
             handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed );
         else
             handlerArm.moveTo( ConfigVar.ArmCfg.handlerOpened );
 
-        poleToggle.Toggle(gamepad2.dpad_down );
-        if( poleToggle.reState ){
-            poleArm.moveTo( ConfigVar.ArmCfg.poleIdle);
-            polePos = ConfigVar.ArmCfg.poleIdle;
+        if( poleToggle.Toggle(gamepad2.dpad_down ) ){
+            poleArm.moveTo( ConfigVar.ArmCfg.poleSaPrePick);
+            //polePos = ConfigVar.ArmCfg.poleIdle;
         }
         else {
-            poleArm.moveTo(ConfigVar.ArmCfg.poleSaPrePick);
-            polePos = ConfigVar.ArmCfg.poleSaPrePick;
+            poleArm.moveTo(ConfigVar.ArmCfg.poleSaPick);
+           //polePos = ConfigVar.ArmCfg.poleSpPrePick;
         };
 
-        transferToggle.Toggle(gamepad2.circle);
-        if( transferToggle.reState )
+        if( transferToggle.Toggle(gamepad2.circle) )
             transferArm.moveTo(ConfigVar.ArmCfg.transferSpCoop);
         else
             transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop );
 
-        turnerToggle.Toggle(gamepad2.triangle);
-        if( turnerToggle.reState )
+        if( turnerToggle.Toggle(gamepad2.triangle) )
             turnerArm.moveTo(ConfigVar.ArmCfg.turnerIdle);
         else
             turnerArm.moveTo(ConfigVar.ArmCfg.turnerFlipped);
@@ -150,12 +140,12 @@ public class TestsOpDev extends LinearOpMode
         tm.reset();
         // Call execution of all robot objects
         processAllSystems();
-
+/*
         // Telemetry
         int red = hardware.colorSensor.red();
         int blue = hardware.colorSensor.blue();
         int green = hardware.colorSensor.green();
-/*
+
         telemetry.addData("red", hardware.colorSensor.red());
         telemetry.addData("green", hardware.colorSensor.green());
         telemetry.addData("blue", hardware.colorSensor.blue());

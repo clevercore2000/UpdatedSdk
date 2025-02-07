@@ -12,7 +12,7 @@ public class EncOdoDev
 
     //TODO  private IMU imu;
     public  final double ENCODER_TICKS_PER_REV = ConfigVar.Odometry.ENCODER_TICKS_PER_REV;
-    public final double WHEEL_RADIUS = ConfigVar.Odometry.WHEEL_RADIUS;
+    public final double WHEEL_DIAM = ConfigVar.Odometry.WHEEL_DIAM;
     public final double WHEEL_SEPARATION_WIDTH = ConfigVar.Odometry.WHEEL_SEPARATION_WIDTH;
     public final double WHEEL_SEPARATION_LENGTH = ConfigVar.Odometry.WHEEL_SEPARATION_LENGTH;
 
@@ -82,7 +82,6 @@ public class EncOdoDev
         actPos[tkRBk]   += computeWheelsDistance(actTicks[tkRBk], prevTicks[tkRBk]);
     }
 
-
     /*
      *    Method: computeDistance
      *   ** calculated the distance in encoder Ticks traveled by a wheel
@@ -91,7 +90,8 @@ public class EncOdoDev
      */
     private double computeWheelsDistance(double actTicks, double prevTicks)
     {
-        return ( ( actTicks - prevTicks ) / ( ENCODER_TICKS_PER_REV * 2 * Math.PI ) );
+        //return ( ( actTicks - prevTicks ) / ( ENCODER_TICKS_PER_REV * 2 * Math.PI ) );
+        return ( ( actTicks - prevTicks ) *(ENCODER_TICKS_PER_REV)/( WHEEL_DIAM * Math.PI ) );
     }
 
     /*
@@ -99,10 +99,11 @@ public class EncOdoDev
      *   ** From wheel velocities, compute base velocity by using the inverse kinematics
      *
      */
+
     private void computeSpeeds() {
-        actSpeed[X] = ( actSpeed[tkLFr] + actSpeed[tkLFr] + actSpeed[tkLBk] + actSpeed[tkRBk]) * WHEEL_RADIUS / 4;
-        actSpeed[Y] = (-actSpeed[tkLFr] + actSpeed[tkRFr] + actSpeed[tkLBk] - actSpeed[tkRBk]) * WHEEL_RADIUS / 4;
-        actSpeed[R] = (-actSpeed[tkLFr] + actSpeed[tkRFr] - actSpeed[tkLBk] + actSpeed[tkRBk]) * WHEEL_RADIUS / (4 * (WHEEL_SEPARATION_WIDTH + WHEEL_SEPARATION_LENGTH));
+        actSpeed[X] = ( actWheelsSpeed[tkLFr] + actWheelsSpeed[tkLFr] + actWheelsSpeed[tkLBk] + actWheelsSpeed[tkRBk]) * (ENCODER_TICKS_PER_REV)/(WHEEL_DIAM * Math.PI) / 4;
+        actSpeed[Y] = (-actWheelsSpeed[tkLFr] + actWheelsSpeed[tkRFr] + actWheelsSpeed[tkLBk] - actWheelsSpeed[tkRBk]) * (ENCODER_TICKS_PER_REV)/(WHEEL_DIAM * Math.PI) / 4;
+        actSpeed[R] = (-actWheelsSpeed[tkLFr] + actWheelsSpeed[tkRFr] - actWheelsSpeed[tkLBk] + actWheelsSpeed[tkRBk]) * (ENCODER_TICKS_PER_REV)/(WHEEL_DIAM * Math.PI) / (4 * (WHEEL_SEPARATION_WIDTH + WHEEL_SEPARATION_LENGTH));
     }
 
     /*
@@ -155,7 +156,5 @@ public class EncOdoDev
     // The mothods getAct___() returns a vector with actual values requested
     public double [] getPosVector()   { return actPos;    }
     public double [] getPrevPosVector() { return prevPos; }
-    // Actual speeds
     public double [] getSppedVector() { return actSpeed; }
-    // Actual deviation
 }
