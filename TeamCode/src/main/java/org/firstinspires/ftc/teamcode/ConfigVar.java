@@ -49,8 +49,8 @@ public class ConfigVar {
         public static double MAX_HEIGHT = 3900.0D;
         public static double MIN_HEIGHT = 100.0D;
         public static double SP_PRE_PICK = 1200.0D; //
-        public static double SP_PICK = 380.0D;      //
-        public static double SP_PLACE = 3950.0D;
+        public static double SP_PICK = 600.0D;      //
+        public static double SP_PLACE = 2100.0D;
         public static double SA_HOME = 500.0D;
         public static double SA_PRE_PICK = 450;
 
@@ -82,20 +82,20 @@ public class ConfigVar {
         public static double HANDLER_MAX = +90;
         public static double HANDLER_SPEED = 100;
         public static double handlerOpened = 25;
-        public static double handlerClosed = 0;
+        public static double handlerClosed = 5;
 
         public static double TRANSFER_MIN = 0;
         public static double TRANSFER_MAX = 300;
         public static double TRANSFER_SPEED = 100;
         public static double transferSpPreCoop = 0;
-        public static double transferSpCoop = 280;
+        public static double transferSpCoop = 300;
 
         public static double POLE_MIN = 0;
         public static double POLE_MAX = 180;
         public static double POLE_SPEED = 100;
         public static double poleSpPick = 20;
-        public static double poleSpPrePick = 100;
-        public static double poleSpPlace = 10;
+        public static double poleSpPrePick = 60;
+        public static double poleSpPlace = 0;
         public static double poleSaPrePick = 120;
         public static double poleSaPick = 150;
         public static double poleHome = 65;

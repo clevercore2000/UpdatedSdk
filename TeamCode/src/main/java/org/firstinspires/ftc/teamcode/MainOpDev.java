@@ -63,13 +63,12 @@ public void setHomePositions()
 {
     // .. Set Home/Idle positions of all systems ...
     mecanumDev.Initialize();
-    // sliderDev.Status = SliderDev.SliderStatus.SilderMoveJog;
 
     gripperArm.setRange(ConfigVar.ArmCfg.GRIPPER_MIN, ConfigVar.ArmCfg.GRIPPER_MAX);
-//    gripperArm.moveTo( ConfigVar.ArmCfg.gripperOpened);
+    gripperArm.moveTo( ConfigVar.ArmCfg.gripperClosed);
 
     handlerArm.setRange(ConfigVar.ArmCfg.HANDLER_MIN, ConfigVar.ArmCfg.HANDLER_MAX);
-//    handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed);
+    handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed);
 
     transferArm.setRange(ConfigVar.ArmCfg.TRANSFER_MIN, ConfigVar.ArmCfg.TRANSFER_MAX);
     transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop);
@@ -98,13 +97,16 @@ public void prePickSACage(){
         case cageIdle:
             if (!gamepad2.square || sliderDev.notReady() || gripperArm.notReady()  || poleArm.notReady()) break;
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
+            handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
             sliderDev.moveTo(ConfigVar.Slider.SA_HOME);
+            //tm.reset();
             cagePrePick = CagePrePick.cagePick1;
             break;
         case cagePick1:
+            //if( tm.seconds() < 1.0) break;
             cagePrePick = CagePrePick.cagePick2;
         case cagePick2:
-            if (sliderDev.notReady() || gripperArm.notReady()  || poleArm.notReady()) break;
+            if (sliderDev.notReady() || gripperArm.notReady() || handlerArm.notReady()  || poleArm.notReady()) break;
             poleArm.moveTo(ConfigVar.ArmCfg.poleSaPrePick);
             cagePrePick = CagePrePick.cagePick3;
             break;
@@ -180,10 +182,11 @@ public void pickSpecimen()
             sliderDev.moveTo( ConfigVar.Slider.SA_HOME);
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
+            //tm.reset();
             pickUpSample = PickSample.pickSP1;
             break;
         case pickSP1:
-            if( poleArm.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
+            if( /*tm.seconds() < 1.0 || */ poleArm.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
             poleArm.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
             pickUpSample = PickSample.pickSP2;
             break;
@@ -234,7 +237,7 @@ public void pickSpecimen()
             pickUpSample = PickSample.pickSP9;
             break;
         case pickSP9:
-            if( !gamepad2.dpad_up && sliderDev.notReady() ) break; // Wait slider to complete it's move
+            if(  sliderDev.notReady() ) break; // Wait slider to complete it's move
             poleArm.moveTo(ConfigVar.ArmCfg.poleSpPlace );
             pickUpSample = PickSample.pickSP10;
         case pickSP10:
@@ -269,14 +272,6 @@ public void runOpMode() throws InterruptedException
         prePickSACage();
         pickSACage();
         if(gamepad2.dpad_left) gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
-        /*
-        if( turnerToggle.Toggle(gamepad2.triangle) )
-            turnerArm.moveTo(ConfigVar.ArmCfg.turnerFlipped);
-        else
-            turnerArm.moveTo(ConfigVar.ArmCfg.turnerIdle);
-
-         */
-
 
         pullUp.servoControl(gamepad1.circle);
         pullUp.motorControl(gamepad1.triangle, gamepad1.cross);
