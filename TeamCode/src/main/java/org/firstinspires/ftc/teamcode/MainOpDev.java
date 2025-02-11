@@ -141,14 +141,16 @@ public void prePickSACage(){
     }
 }
 
-enum CagePick { cagePickIdle, cageGripper, cagePick,cagePrePick}
+enum CagePick { cagePickIdle, cageGripper, cagePick,cagePrePick, cageOpenGripper}
 CagePick cagePick = CagePick.cagePickIdle;
 public void pickSACage()
 {
     switch ( cagePick ) {
+
         case cagePickIdle:
             // Check all servo's are ready
-            if (!gamepad2.circle || gripperArm.notReady() || poleArm1.notReady() || poleArm2.notReady()) break;
+            if (!(gamepad2.circle && cagePrePick == CagePrePick.cagePick5)|| gripperArm.notReady() || poleArm1.notReady() || poleArm2.notReady()) break;
+
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
             cagePick = CagePick.cageGripper;
             break;
@@ -156,7 +158,10 @@ public void pickSACage()
             if (gripperArm.notReady() || poleArm1.notReady() || poleArm2.notReady()) break;
             poleArm1.moveTo(ConfigVar.ArmCfg.poleSaPick);
             poleArm2.moveTo(ConfigVar.ArmCfg.poleSaPick);
+
             cagePick = CagePick.cagePick;
+            break;
+
         case cagePick:
             // Check all servo's are ready
             if (gripperArm.notReady() || poleArm1.notReady() || poleArm2.notReady()) break;
@@ -174,7 +179,7 @@ public void pickSACage()
 }
 
 //enum PickUSample {pickIdle, pickStart, pickFlip, pickTransfer, pickPreGrab,pickGrab, pickSliderUp, pickPolePlace, pickToIdle }
-    enum PickSample { pickIdle, pickSP1 ,pickSP2, pickSP3, pickSP4, pickSP5, pickSP6, pickSP7, pickSP71, pickSP8, pickSP9, pickSP10 }
+    enum PickSample { cancel,pickIdle, pickSP1 ,pickSP2, pickSP3, pickSP4, pickSP5, pickSP6, pickSP7, pickSP71, pickSP8, pickSP9, pickSP10 }
 PickSample pickUpSample = PickSample.pickIdle;
 
 /*
@@ -185,9 +190,15 @@ public void pickSpecimen()
 {
     switch( pickUpSample )
     {
+        /*case cancel:
+            sliderDev.moveTo(hardware.sliderMotor1.getCurrentPosition());
+            poleArm1.moveTo(ConfigVar.ArmCfg.poleIdle);
+            poleArm2.moveTo(ConfigVar.ArmCfg.poleIdle);
+            break;*/
         case pickIdle:
             // Check all servo's are ready
             if( !gamepad2.triangle || sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady() || turnerArm.notReady() ) break;
+           // if(gamepad2.ps) pickUpSample = PickSample.cancel;
             sliderDev.moveTo( ConfigVar.Slider.SA_HOME);
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
@@ -298,7 +309,6 @@ public void runOpMode() throws InterruptedException
         //int blue = hardware.colorSensor.blue();
         telemetry.addData("gripperPos:", hardware.gripperServo.getPosition());
         //int green = hardware.colorSensor.green();
-
 //        telemetry.addData("red", hardware.colorSensor.red());
 //        telemetry.addData("green", hardware.colorSensor.green());
 //        telemetry.addData("blue", hardware.colorSensor.blue());

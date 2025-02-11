@@ -115,7 +115,7 @@ public class ArmDev
     }
     // Method: mapRange
     // Returns position in servo units (0 .. 1)
-    private double mapRange(double inValue)
+    public double mapRange(double inValue)
     {
         return ( ((inValue - minRange) * /*servo_full_range*/1) / (maxRange - minRange) + /*servo_min*/0 );
     }

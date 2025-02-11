@@ -75,8 +75,8 @@ public class ConfigVar {
         public static double GRIPPER_MIN = 0;
         public static double GRIPPER_MAX = 180;
         public static double GRIPPER_SPEED = 100;
-        public static double gripperOpened = 110;
-        public static double gripperClosed= 0;
+        public static double gripperOpened = 125;
+        public static double gripperClosed= 11;
 
         public static double HANDLER_MIN = -90;
         public static double HANDLER_MAX = +90;
@@ -102,7 +102,7 @@ public class ConfigVar {
         public static double poleSaPick = 150;
         public static double poleHome = 65;
         public static double poleIdle = 20;
-        public static double poleSaPlace = 50;
+        public static double poleSaPlace = 70;
 
         public static double TURNER_MIN = 0;
         public static double TURNER_MAX = 1800;

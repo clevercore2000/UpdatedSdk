@@ -13,7 +13,8 @@ public class TestsOpDev extends LinearOpMode
     // Declare all devices of the Robot
     private ArmDev gripperArm;
     private ArmDev handlerArm;
-    private ArmDev poleArm;
+    private ArmDev poleArm1;
+    private ArmDev poleArm2;
     private ArmDev transferArm;
     private ArmDev turnerArm;
     private SliderDev sliderDev;
@@ -40,7 +41,9 @@ public class TestsOpDev extends LinearOpMode
 
             gripperArm = new ArmDev( hardware.gripperServo, 100);
             handlerArm = new ArmDev(hardware.handlerServo, 100);
-            poleArm = new ArmDev(hardware.poleServo1, 150 );
+            poleArm1 = new ArmDev(hardware.poleServo1, 150 );
+            poleArm2 = new ArmDev(hardware.poleServo2, 150 );
+
             transferArm = new ArmDev(hardware.transferServo, 100);
             turnerArm = new ArmDev(hardware.turnerServo, 300);
 
@@ -71,8 +74,10 @@ public class TestsOpDev extends LinearOpMode
         transferArm.setRange(ConfigVar.ArmCfg.TRANSFER_MIN, ConfigVar.ArmCfg.TRANSFER_MAX);
         transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop);
 
-        poleArm.setRange(ConfigVar.ArmCfg.POLE_MIN1,ConfigVar.ArmCfg.POLE_MAX1);
-        poleArm.moveTo( ConfigVar.ArmCfg.poleIdle);
+        poleArm1.setRange(ConfigVar.ArmCfg.POLE_MIN1,ConfigVar.ArmCfg.POLE_MAX1);
+        poleArm1.moveTo( ConfigVar.ArmCfg.poleIdle);
+        poleArm2.setRange(ConfigVar.ArmCfg.POLE_MIN2,ConfigVar.ArmCfg.POLE_MAX2);
+        poleArm2.moveTo( ConfigVar.ArmCfg.poleIdle);
         turnerArm.setRange(ConfigVar.ArmCfg.TURNER_MIN,ConfigVar.ArmCfg.TURNER_MAX);
 //        turnerArm.moveTo( ConfigVar.ArmCfg.turnerIdle);
     }
@@ -83,7 +88,8 @@ public class TestsOpDev extends LinearOpMode
         sliderDev.execute();
         gripperArm.execute();
         handlerArm.execute();
-        poleArm.execute();
+        poleArm1.execute();
+        poleArm2.execute();
         transferArm.execute();
         turnerArm.execute();
     }
@@ -118,11 +124,13 @@ public class TestsOpDev extends LinearOpMode
             handlerArm.moveTo( ConfigVar.ArmCfg.handlerOpened );
 
         if( poleToggle.Toggle(gamepad2.dpad_down ) ){
-            poleArm.moveTo( ConfigVar.ArmCfg.poleSaPrePick);
+            poleArm1.moveTo( 0);
+            poleArm2.moveTo( 0);
             //polePos = ConfigVar.ArmCfg.poleIdle;
         }
         else {
-            poleArm.moveTo(ConfigVar.ArmCfg.poleSaPick);
+            poleArm1.moveTo(180);
+            poleArm2.moveTo(180);
            //polePos = ConfigVar.ArmCfg.poleSpPrePick;
         };
 

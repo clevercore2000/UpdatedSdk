@@ -63,6 +63,7 @@ public class Hardware
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         rightBack.setDirection(DcMotorSimple.Direction.REVERSE);
         sliderMotor2.setDirection(DcMotorSimple.Direction.REVERSE);
+
         pullMotor =   hw.get(DcMotor.class, "pullMotor");
         pullMotor.setDirection(DcMotorSimple.Direction.FORWARD);
         //**********************************************************************************//
@@ -70,7 +71,8 @@ public class Hardware
         gripperServo = hw.get(Servo.class, "Gripper");
         poleServo1 = hw.get(Servo.class, "Pole1");
         poleServo2 = hw.get(Servo.class, "Pole2");
-        //poleServo.setDirection(Servo.Direction.REVERSE);
+        poleServo2.setDirection(Servo.Direction.REVERSE);
+
         handlerServo = hw.get(Servo.class, "Handler");
         transferServo = hw.get(Servo.class, "Transfer");
         turnerServo = hw.get(Servo.class, "Turner");
