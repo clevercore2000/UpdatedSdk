@@ -40,7 +40,7 @@ public class TestsOpDev extends LinearOpMode
 
             gripperArm = new ArmDev( hardware.gripperServo, 100);
             handlerArm = new ArmDev(hardware.handlerServo, 100);
-            poleArm = new ArmDev(hardware.poleServo, 150 );
+            poleArm = new ArmDev(hardware.poleServo1, 150 );
             transferArm = new ArmDev(hardware.transferServo, 100);
             turnerArm = new ArmDev(hardware.turnerServo, 300);
 
@@ -71,7 +71,7 @@ public class TestsOpDev extends LinearOpMode
         transferArm.setRange(ConfigVar.ArmCfg.TRANSFER_MIN, ConfigVar.ArmCfg.TRANSFER_MAX);
         transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop);
 
-        poleArm.setRange(ConfigVar.ArmCfg.POLE_MIN,ConfigVar.ArmCfg.POLE_MAX);
+        poleArm.setRange(ConfigVar.ArmCfg.POLE_MIN1,ConfigVar.ArmCfg.POLE_MAX1);
         poleArm.moveTo( ConfigVar.ArmCfg.poleIdle);
         turnerArm.setRange(ConfigVar.ArmCfg.TURNER_MIN,ConfigVar.ArmCfg.TURNER_MAX);
 //        turnerArm.moveTo( ConfigVar.ArmCfg.turnerIdle);
@@ -157,7 +157,7 @@ public class TestsOpDev extends LinearOpMode
 
         // telemetry.addData("transf.:", transferArm.isReady());
         // telemetry.addData("turner:", turnerArm.isReady());
-        // telemetry.addData("handler:", handlerArm.isReady());
+        // telemetry.addData("handler:", handlerArm.isReady());q
   /*
         telemetry.addData("transf.:", transferArm.isReady());
         telemetry.addData("turner:", turnerArm.isReady());
@@ -166,7 +166,11 @@ public class TestsOpDev extends LinearOpMode
         telemetry.addData("pole:", poleArm.isReady());
         telemetry.addData("sPos:", sliderDev.getActPosition());
         telemetry.addData("sInPos:", sliderDev.inPosition());
+
 */
+            telemetry.addData("gripperPos:", hardware.gripperServo.getPosition());
+
+
 
             telemetry.update();
 

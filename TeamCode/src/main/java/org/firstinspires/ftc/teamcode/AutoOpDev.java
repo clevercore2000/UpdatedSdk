@@ -93,7 +93,7 @@ public class AutoOpDev extends LinearOpMode
             gripperArm = new ArmDev( hardware.gripperServo, g1GripperArm, ConfigVar.ArmCfg.GRIPPER_SPEED);
             handlerArm = new ArmDev( hardware.handlerServo, g2HandlerArm, ConfigVar.ArmCfg.HANDLER_SPEED);
             transferArm = new ArmDev(hardware.transferServo, g3Transfer, ConfigVar.ArmCfg.TRANSFER_SPEED);
-            poleArm = new ArmDev( hardware.poleServo, g4PoleArm, ConfigVar.ArmCfg.POLE_SPEED);
+            poleArm = new ArmDev( hardware.poleServo1, g4PoleArm, ConfigVar.ArmCfg.POLE_SPEED);
             tm = new ElapsedTime();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -106,7 +106,7 @@ public class AutoOpDev extends LinearOpMode
 
         handlerArm.setRange(ConfigVar.ArmCfg.HANDLER_MIN, ConfigVar.ArmCfg.HANDLER_MAX);
         transferArm.setRange(ConfigVar.ArmCfg.TRANSFER_MIN, ConfigVar.ArmCfg.TRANSFER_MAX);
-        poleArm.setRange(ConfigVar.ArmCfg.POLE_MIN,ConfigVar.ArmCfg.POLE_MAX);
+        poleArm.setRange(ConfigVar.ArmCfg.POLE_MIN1,ConfigVar.ArmCfg.POLE_MAX1);
         Status = AutoRunStatus.blockStopped;
     }
     /*

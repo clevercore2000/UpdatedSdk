@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -20,11 +19,11 @@ public class Hardware
     public  DcMotor pullMotor;
     public IMU imu;
 
-
+    public Servo poleServo2;
     public Servo gripperServo;
     public Servo handlerServo;
     public Servo transferServo;
-    public Servo poleServo;
+    public Servo poleServo1;
     public Servo turnerServo;
     public Servo pullServo;
 
@@ -69,7 +68,8 @@ public class Hardware
         //**********************************************************************************//
         /**Servos**/
         gripperServo = hw.get(Servo.class, "Gripper");
-        poleServo = hw.get(Servo.class, "Slider");
+        poleServo1 = hw.get(Servo.class, "Pole1");
+        poleServo2 = hw.get(Servo.class, "Pole2");
         //poleServo.setDirection(Servo.Direction.REVERSE);
         handlerServo = hw.get(Servo.class, "Handler");
         transferServo = hw.get(Servo.class, "Transfer");

@@ -37,9 +37,9 @@ public class ConfigVar {
         public static double IN_WINDOW = 50;
         public static double MAX_TRAVEL = 4000;     // old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
         public static double HOLD_SPEED = 30;       // Maximum speed
-        public static double MAX_ACCEL = 500;
+        //public static double MAX_ACCEL = 500;
         public static double MAX_POWER = 1.0D;
-        public static double MAX_SPEED = 1700; // Encoder-ticks/sec
+        //public static double MAX_SPEED = 1700; // Encoder-ticks/sec
         public static double EMA_FILTER = 0.6;
         // Speed Ramp Generator
         //  * uses logistic function to generate a setpoint signal for the speed controller
@@ -73,10 +73,10 @@ public class ConfigVar {
     @Config
     public static class ArmCfg{
         public static double GRIPPER_MIN = 0;
-        public static double GRIPPER_MAX = 300;
+        public static double GRIPPER_MAX = 180;
         public static double GRIPPER_SPEED = 100;
-        public static double gripperOpened = 35;
-        public static double gripperClosed= 105;
+        public static double gripperOpened = 110;
+        public static double gripperClosed= 0;
 
         public static double HANDLER_MIN = -90;
         public static double HANDLER_MAX = +90;
@@ -85,13 +85,15 @@ public class ConfigVar {
         public static double handlerClosed = 5;
 
         public static double TRANSFER_MIN = 0;
-        public static double TRANSFER_MAX = 300;
+        public static double TRANSFER_MAX = 1800;
         public static double TRANSFER_SPEED = 100;
         public static double transferSpPreCoop = 0;
-        public static double transferSpCoop = 300;
+        public static double transferSpCoop = 600;
 
-        public static double POLE_MIN = 0;
-        public static double POLE_MAX = 180;
+        public static double POLE_MIN1 = 0;
+        public static double POLE_MAX1 = 180;
+        public static double POLE_MIN2 = 0;
+        public static double POLE_MAX2  = 180;
         public static double POLE_SPEED = 100;
         public static double poleSpPick = 20;
         public static double poleSpPrePick = 60;
