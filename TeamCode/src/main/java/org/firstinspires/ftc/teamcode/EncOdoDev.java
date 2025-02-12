@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+import com.qualcomm.robotcore.util.ElapsedTime;
+
 //package org.firstinspires.ftc.teamcode;
 
 
@@ -24,26 +26,29 @@ public class EncOdoDev
     private final int X = 0;    // Index for the X axis
     private final int Y = 1;    // Index for the Y axis
     private final int R = 2;    // // Index for the Direction
-    private double [] actTicks = {0,0,0,0}; // Actual encoders vector
+    public double [] actTicks = {0,0,0,0}; // Actual encoders vector
 
-    private double [] prevTicks = {0,0,0,0}; // Preview encoers vector
+    public double [] prevTicks = {0,0,0,0}; // Preview encoers vector
 
-    private double [] actWheelsPos = {0,0,0,0}; // Wheels positions vector
+    public double [] actWheelsPos = {0,0,0,0}; // Wheels positions vector
 
-    private double [] actWheelsSpeed = {0,0,0,0}; // Actual wheels speed vector
+    public double [] actWheelsSpeed = {0,0,0,0}; // Actual wheels speed vector
 
     // Robot position
-    private double [] actPos = {0, 0, 0, 0};    // Actual position vector
-    private double [] prevPos  = {0, 0, 0, 0};  // Preview position vector
-    private double [] actSpeed  = {0, 0, 0, 0}; // Actual speed vector
+    public double [] actPos = {0, 0, 0, 0};    // Actual position vector
+    public double [] prevPos  = {0, 0, 0, 0};  // Preview position vector
+    public double [] actSpeed  = {0, 0, 0, 0}; // Actual speed vector
 
     Hardware hardware;
+    ElapsedTime tm;
     private double dT = 0;
 
     // Constructor
     EncOdoDev( Hardware hw)
     {
         hardware = hw;
+        tm = new ElapsedTime();
+
     }
     // Method: Initialize
     // Initializes variables of odometry
@@ -51,7 +56,7 @@ public class EncOdoDev
     {
         //TODO imu.resetYaw();
         setHomePos(0, 0 , 0);
-        //       timer.startTime();
+        tm.startTime();
     }
     // Method: setHomePos
     // Sets the value for Home ( offset )
@@ -76,10 +81,9 @@ public class EncOdoDev
         actWheelsSpeed[tkLBk] = actTicks[tkLBk] - prevTicks[tkLBk] / dT;
         actWheelsSpeed[tkRBk] = actTicks[tkRBk] - prevTicks[tkRBk] / dT;
         // Calculate wheels positions
-        actPos[tkLFr]   += computeWheelsDistance(actTicks[tkLFr], prevTicks[tkLFr]);
-        actPos[tkRFr]   += computeWheelsDistance(actTicks[tkRFr], prevTicks[tkRFr]);
-        actPos[tkLBk]   += computeWheelsDistance(actTicks[tkLBk], prevTicks[tkLBk]);
-        actPos[tkRBk]   += computeWheelsDistance(actTicks[tkRBk], prevTicks[tkRBk]);
+//        actPos[X]   += computeWheelsDistance(actTicks[tkLFr], prevTicks[tkLFr]);
+//        actPos[Y]   += computeWheelsDistance(actTicks[tkRFr], prevTicks[tkRFr]);
+
     }
 
     /*
@@ -90,8 +94,7 @@ public class EncOdoDev
      */
     private double computeWheelsDistance(double actTicks, double prevTicks)
     {
-        //return ( ( actTicks - prevTicks ) / ( ENCODER_TICKS_PER_REV * 2 * Math.PI ) );
-        return ( ( actTicks - prevTicks ) *(ENCODER_TICKS_PER_REV)/( WHEEL_DIAM * Math.PI ) );
+        return ( ( actTicks - prevTicks ) * WHEEL_DIAM * Math.PI /ENCODER_TICKS_PER_REV );
     }
 
     /*
@@ -101,9 +104,9 @@ public class EncOdoDev
      */
 
     private void computeSpeeds() {
-        actSpeed[X] = ( actWheelsSpeed[tkLFr] + actWheelsSpeed[tkLFr] + actWheelsSpeed[tkLBk] + actWheelsSpeed[tkRBk]) * (ENCODER_TICKS_PER_REV)/(WHEEL_DIAM * Math.PI) / 4;
-        actSpeed[Y] = (-actWheelsSpeed[tkLFr] + actWheelsSpeed[tkRFr] + actWheelsSpeed[tkLBk] - actWheelsSpeed[tkRBk]) * (ENCODER_TICKS_PER_REV)/(WHEEL_DIAM * Math.PI) / 4;
-        actSpeed[R] = (-actWheelsSpeed[tkLFr] + actWheelsSpeed[tkRFr] - actWheelsSpeed[tkLBk] + actWheelsSpeed[tkRBk]) * (ENCODER_TICKS_PER_REV)/(WHEEL_DIAM * Math.PI) / (4 * (WHEEL_SEPARATION_WIDTH + WHEEL_SEPARATION_LENGTH));
+        actSpeed[X] = ( actWheelsSpeed[tkLFr] + actWheelsSpeed[tkLFr] + actWheelsSpeed[tkLBk] + actWheelsSpeed[tkRBk]) * (WHEEL_DIAM * Math.PI /ENCODER_TICKS_PER_REV) / 4;
+        actSpeed[Y] = (-actWheelsSpeed[tkLFr] + actWheelsSpeed[tkRFr] + actWheelsSpeed[tkLBk] - actWheelsSpeed[tkRBk]) * (WHEEL_DIAM * Math.PI /ENCODER_TICKS_PER_REV) / 4;
+        actSpeed[R] = (-actWheelsSpeed[tkLFr] + actWheelsSpeed[tkRFr] - actWheelsSpeed[tkLBk] + actWheelsSpeed[tkRBk]) * (WHEEL_DIAM * Math.PI /ENCODER_TICKS_PER_REV) / (4 * (WHEEL_SEPARATION_WIDTH + WHEEL_SEPARATION_LENGTH));
     }
 
     /*
@@ -144,14 +147,11 @@ public class EncOdoDev
     // This method has to be called every cycle in the MainOpMode and AutoOpMode or once in the MecanumDev object
     public void execute()
     {
-        //       dT = timer.milliseconds() / 1e3D;   // Get a value in seconds
-        //       timer.reset();
+        dT = tm.seconds();   // Get a value in seconds
+        tm.reset();
         computeWheelsTicks();
         computeSpeeds();
         computePosition();
-        // Position and orientation are:
-        // [ actPosX, actPosY, actRotDir ]
-        // [ actSpeedX, actSpeedY, actSpeedDir]
     }
     // The mothods getAct___() returns a vector with actual values requested
     public double [] getPosVector()   { return actPos;    }

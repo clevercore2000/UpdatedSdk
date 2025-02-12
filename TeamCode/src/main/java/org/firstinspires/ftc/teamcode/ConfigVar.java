@@ -35,7 +35,7 @@ public class ConfigVar {
         public static double SPEED_KI = 0.00001D;     // Speed PID - Integrator coefficient
         public static double SPEED_KD = 0.00001D;       // Speed PID - Derivative coefficient
         public static double IN_WINDOW = 50;
-        public static double MAX_TRAVEL = 4000;     // old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
+        //public static double MAX_TRAVEL = 4000;     // old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
         public static double HOLD_SPEED = 30;       // Maximum speed
         //public static double MAX_ACCEL = 500;
         public static double MAX_POWER = 1.0D;
@@ -46,13 +46,13 @@ public class ConfigVar {
         public static double STICK_DEAD_ZONE = 0.0D;
         public static double STICK_GAIN =  1.0D;  // Joystick input value
         public static double JOG_SPEED = 2000.0D;
-        public static double MAX_HEIGHT = 3900.0D;
+        public static double MAX_HEIGHT = 4500.0D;
         public static double MIN_HEIGHT = 100.0D;
         public static double SP_PRE_PICK = 1200.0D; //
         public static double SP_PICK = 600.0D;      //
         public static double SP_PLACE = 2100.0D;
         public static double SA_HOME = 500.0D;
-        public static double SA_PRE_PICK = 450;
+        public static double SA_PRE_PICK = 330;
 
         // Predefined positions ( would this even work??)
         /*
@@ -81,14 +81,14 @@ public class ConfigVar {
         public static double HANDLER_MIN = -90;
         public static double HANDLER_MAX = +90;
         public static double HANDLER_SPEED = 100;
-        public static double handlerOpened = 25;
+        public static double handlerOpened = 28;
         public static double handlerClosed = 5;
 
         public static double TRANSFER_MIN = 0;
         public static double TRANSFER_MAX = 1800;
         public static double TRANSFER_SPEED = 100;
         public static double transferSpPreCoop = 0;
-        public static double transferSpCoop = 600;
+        public static double transferSpCoop = 630;
 
         public static double POLE_MIN1 = 0;
         public static double POLE_MAX1 = 180;
@@ -99,9 +99,10 @@ public class ConfigVar {
         public static double poleSpPrePick = 60;
         public static double poleSpPlace = 0;
         public static double poleSaPrePick = 120;
-        public static double poleSaPick = 150;
+        public static double poleSaPick = 145
+                ;
         public static double poleHome = 65;
-        public static double poleIdle = 20;
+        public static double poleIdle = 15;
         public static double poleSaPlace = 70;
 
         public static double TURNER_MIN = 0;

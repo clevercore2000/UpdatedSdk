@@ -25,7 +25,7 @@ public class SliderDev{
     public double SPEED_KD = ConfigVar.Slider.SPEED_KD;     // Speed PID - Derivative coefficient
     public double IN_WINDOW = ConfigVar.Slider.IN_WINDOW;   // Used to check slider is in position actPos = {-IN_WINDOW,..,+IN_WINDOW}
     public double HOLD_SPEED = ConfigVar.Slider.HOLD_SPEED; // Used while slider is in sliderReady to hold the position
-    public double MAX_TRAVEL = ConfigVar.Slider.MAX_TRAVEL; // old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
+//    public double MAX_TRAVEL = ConfigVar.Slider.MAX_TRAVEL; // old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
     public double MAX_POWER = ConfigVar.Slider.MAX_POWER;
     public  double MAX_HEIGHT= ConfigVar.Slider.MAX_HEIGHT;
     public  double MIN_HEIGHT= ConfigVar.Slider.MIN_HEIGHT;
@@ -107,7 +107,7 @@ public class SliderDev{
                 spSpeed = limitValue( (( targetPos - actPos ) * POS_KP) , targetSpeed);
                 break;
             case sliderMoveJog: // While in JOG state it just passed targetSpeed from Joystick ( well with some gains - see MoveJog method)
-                if( Math.abs(joystickValue) > 0 )
+                if( Math.abs(joystickValue) > 0 && !( actPos > MAX_HEIGHT && joystickValue > 0 ))
                 {
                     // When joystick is out of rest we only speed control ( no position control ) ...
                     spSpeed = joystickValue * STICK_GAIN * JOG_SPEED; // set targetSpeed as JOG_SPEED. Adjust STICK_GAIN if required
@@ -173,7 +173,7 @@ public class SliderDev{
     public void moveTo( String trgPos, String trgSpeed )
     {
         if(trgPos == null || trgSpeed == null ) return;
-        targetPos = (trgPos != "NOP")?limitValue( Double.parseDouble(trgPos), 0, MAX_TRAVEL ):targetPos;
+        targetPos = (trgPos != "NOP")?limitValue( Double.parseDouble(trgPos), 0, MAX_HEIGHT ):targetPos;
         targetSpeed = ( trgSpeed != "NOP")? Double.parseDouble(trgSpeed):targetSpeed;
         Status = SliderStatus.sliderMoveAuto;
     }
@@ -213,7 +213,6 @@ public class SliderDev{
         SPEED_KI = ConfigVar.Slider.SPEED_KI;     // Speed PID - Integrator coefficient
         SPEED_KD = ConfigVar.Slider.SPEED_KD;     // Speed PID - Derivative coefficient
         IN_WINDOW = ConfigVar.Slider.IN_WINDOW;
-        MAX_TRAVEL = ConfigVar.Slider.MAX_TRAVEL;// old robot had slider extended to max 2100 ticks and travelled it in 1.5 sec
         MAX_POWER = ConfigVar.Slider.MAX_POWER;
         MAX_HEIGHT = ConfigVar.Slider.MAX_HEIGHT;
         MIN_HEIGHT = ConfigVar.Slider.MIN_HEIGHT;

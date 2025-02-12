@@ -40,7 +40,7 @@ public class MecanumDev// extends Thread
     // Motors are removed from hardware
     //static HardwareMap hw;
 
-    private EncOdoDev odo;
+    public EncOdoDev odo;
     ConfigVar configVar;
     // Retrieve the IMU from the hardware map
 
@@ -189,6 +189,8 @@ public class MecanumDev// extends Thread
         targetPos[X]= actPos[X];
         targetPos[Y] = actPos[Y];
         targetPos[R] = actPos[R];
+        targetSpeedXY = 0;
+        targetSpeedR = 0;
     }
     /*
      *  Move___To functions
@@ -272,7 +274,7 @@ public class MecanumDev// extends Thread
         return true;
     }
     // The mothods getAct___() returns a vector with actual values requested
-    public double [] getPosVector()   { return actPos;    } // Returns {actPos[X], actPos[Y], actPos[R]}
+    public double [] getPosVector()   { return actPos;   } // Returns {actPos[X], actPos[Y], actPos[R]}
     // Actual speeds
     public double [] getSppedVector() { return actSpeed; }  // Returns {actSpeed[X], actSpeed[Y], actSpeed[R]}
     // Actual deviation
