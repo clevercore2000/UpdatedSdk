@@ -148,35 +148,35 @@ public class TestsOpDev extends LinearOpMode
         tm.reset();
         // Call execution of all robot objects
         processAllSystems();
+            //telemetry.addData("PrePick", cagePrePick);
+            //telemetry.addData("Pick:", cagePick);
 /*
-        // Telemetry
-        int red = hardware.colorSensor.red();
-        int blue = hardware.colorSensor.blue();
-        int green = hardware.colorSensor.green();
+        telemetry.addData("whPos", mecanumDev.odo.actWheelsPos[0]);
+        telemetry.addData("whSpe", mecanumDev.odo.actWheelsSpeed[0]);
+        telemetry.addData("Pos:" , mecanumDev.odo.actPos[0]);
+        telemetry.addData("Spe" , mecanumDev.odo.actSpeed[0]);
+        telemetry.addData("sPos:", sliderDev.actPos);
+ */
+//        telemetry.addData("gripper:", hardware.gripperServo.getPosition());
+//        telemetry.addData("sliderSts:", sliderDev.Status);
+//        telemetry.addData("trgPos:", sliderDev.targetPos);
+//        telemetry.addData("actSpe:", sliderDev.actSpeed);
+//        telemetry.addData("spSpe", sliderDev.sspSpeed );
+//        telemetry.addData("sPow:", sliderDev.sliderPower);
+//        telemetry.addData("spSpeed:", sliderDev.getSpSpeed());
+//        telemetry.addData("actPos:", sliderDev.getActPosition());
+            telemetry.addData("Mec:", mecanumDev.isReady());
+            telemetry.addData("Slid",sliderDev.isReady());
+            telemetry.addData("Grip:", gripperArm.isReady());
+            telemetry.addData("Hand:", handlerArm.isReady());
+            telemetry.addData("Turn:", turnerArm.isReady());
+            telemetry.addData("Tran:", transferArm.isReady());
 
-        telemetry.addData("red", hardware.colorSensor.red());
-        telemetry.addData("green", hardware.colorSensor.green());
-        telemetry.addData("blue", hardware.colorSensor.blue());
-*/
-        telemetry.addData("sliderState:", sliderDev.isReady());
-        telemetry.addData("actPos", sliderDev.getActPosition());
-        telemetry.addData("trgPos:", sliderDev.targetPos);
-        telemetry.addData("Pole", polePos );
 
-        // telemetry.addData("transf.:", transferArm.isReady());
-        // telemetry.addData("turner:", turnerArm.isReady());
-        // telemetry.addData("handler:", handlerArm.isReady());q
-  /*
-        telemetry.addData("transf.:", transferArm.isReady());
-        telemetry.addData("turner:", turnerArm.isReady());
-        telemetry.addData("handler:", handlerArm.isReady());
-        telemetry.addData("gripper:", gripperArm.isReady());
-        telemetry.addData("pole:", poleArm.isReady());
-        telemetry.addData("sPos:", sliderDev.getActPosition());
-        telemetry.addData("sInPos:", sliderDev.inPosition());
-
-*/
-            telemetry.addData("gripperPos:", hardware.gripperServo.getPosition());
+//        telemetry.addData("P-Kp:", ConfigVar.Slider.POS_KP);
+//        telemetry.addData("S-Kp:", ConfigVar.Slider.SPEED_KP);
+//        telemetry.addData("S-Ki:", ConfigVar.Slider.SPEED_KI);
+//        telemetry.addData("S-Ki:", ConfigVar.Slider.SPEED_KD);
 
 
 

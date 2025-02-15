@@ -49,9 +49,9 @@ public class ConfigVar {
         public static double MAX_HEIGHT = 4500.0D;
         public static double MIN_HEIGHT = 100.0D;
         public static double SP_PRE_PICK = 1200.0D; //
-        public static double SP_PICK = 600.0D;      //
-        public static double SP_PLACE = 2100.0D;
-        public static double SA_HOME = 500.0D;
+        public static double SP_PICK = 550.0D;      //
+        public static double SP_PLACE = 2920.0D;
+        public static double SA_HOME = 400.0D;
         public static double SA_PRE_PICK = 330;
 
         // Predefined positions ( would this even work??)
@@ -60,7 +60,7 @@ public class ConfigVar {
          */
         public static double HOME_POS = 0;    // Home position ( fully retracted ?? )
         public static double LOW_BASKET_POS = 1500; // Low basket position
-        public static double TOP_BASCKET_POS = 2100;  // Top basket position
+        public static double TOP_BASCKET_POS = 4600;  // Top basket position
         public static double GROUND_PICKUP_POS = 50;  // Ground pickup position
     }
     @Config
@@ -75,18 +75,18 @@ public class ConfigVar {
         public static double GRIPPER_MIN = 0;
         public static double GRIPPER_MAX = 180;
         public static double GRIPPER_SPEED = 100;
-        public static double gripperOpened = 125;
+        public static double gripperOpened = 120;
         public static double gripperClosed= 11;
 
         public static double HANDLER_MIN = -90;
         public static double HANDLER_MAX = +90;
         public static double HANDLER_SPEED = 100;
         public static double handlerOpened = 28;
-        public static double handlerClosed = 5;
+        public static double handlerClosed = 2;
 
         public static double TRANSFER_MIN = 0;
         public static double TRANSFER_MAX = 1800;
-        public static double TRANSFER_SPEED = 100;
+        public static double TRANSFER_SPEED = 200;
         public static double transferSpPreCoop = 0;
         public static double transferSpCoop = 630;
 
@@ -96,18 +96,19 @@ public class ConfigVar {
         public static double POLE_MAX2  = 180;
         public static double POLE_SPEED = 100;
         public static double poleSpPick = 20;
-        public static double poleSpPrePick = 60;
+        public static double poleSpPrePick = 80;
         public static double poleSpPlace = 0;
-        public static double poleSaPrePick = 120;
-        public static double poleSaPick = 145
-                ;
+        public static double poleSaPrePick = 145;
+        public static double poleSaPick = 173;
+
         public static double poleHome = 65;
         public static double poleIdle = 15;
-        public static double poleSaPlace = 70;
+        public static double poleSaPlace1 = 50;
+        public static double poleSaPlace2 = 70;
 
         public static double TURNER_MIN = 0;
         public static double TURNER_MAX = 1800;
-        public static double TURNER_SPEED = 100;
+        public static double TURNER_SPEED = 1000;
         public static double turnerIdle = 1000;
         public static double turnerFlipped = 340;
     }

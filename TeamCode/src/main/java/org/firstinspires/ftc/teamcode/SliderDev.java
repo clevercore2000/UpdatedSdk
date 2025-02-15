@@ -95,7 +95,7 @@ public class SliderDev{
         dT /= 1000.0; // Convert to seconds from now on
         tm.reset(); // Restart clock for the next sample tm
         // Read actual position of the Slider
-        actPos = emaPos.filter( hardware.sliderMotor1.getCurrentPosition(), 0.4);
+        actPos = emaPos.filter( hardware.sliderMotor2.getCurrentPosition(), 0.4);
         // Calculate the actual speed of the slider v = ( X-Xo )/(T-To) and filer it with an EMA filter
         actSpeed = emaSpeed.filter( (actPos - prevPos)/dT , ConfigVar.Slider.EMA_FILTER/*EMA-Coeficient*/);
         prevPos = actPos;
