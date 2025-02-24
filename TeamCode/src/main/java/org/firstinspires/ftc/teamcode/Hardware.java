@@ -26,6 +26,7 @@ public class Hardware
     public Servo poleServo1;
     public Servo turnerServo;
     public Servo pullServo;
+    public Servo rotateGripper;
 
     //public ColorSensor colorSensor;
     public Hardware( HardwareMap hw ) {
@@ -88,7 +89,7 @@ public class Hardware
         turnerServo = hw.get(Servo.class, "Turner");
 
         pullServo = hw.get(Servo.class, "pullServo");
-
+        rotateGripper = hw.get(Servo.class, "rotGripper");
         /**Sensor**/
         //colorSensor = hw.get(ColorSensor.class, "colorSensor");
     }

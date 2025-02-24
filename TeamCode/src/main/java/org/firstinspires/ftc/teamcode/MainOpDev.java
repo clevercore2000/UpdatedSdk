@@ -16,6 +16,7 @@ private ArmDev poleArm1;
 private ArmDev poleArm2;
 private ArmDev transferArm;
 private ArmDev turnerArm;
+private ArmDev rotGripperArm;
 private SliderDev sliderDev;
 private MecanumDev mecanumDev;
 private PullUp pullUp;
@@ -48,6 +49,7 @@ public void initialize()
         transferArm = new ArmDev(hardware.transferServo, ConfigVar.ArmCfg.TRANSFER_SPEED);
         turnerArm = new ArmDev(hardware.turnerServo, ConfigVar.ArmCfg.TURNER_SPEED);
         poleArm2 = new ArmDev(hardware.poleServo2, ConfigVar.ArmCfg.POLE_SPEED);
+        rotGripperArm = new ArmDev(hardware.rotateGripper,ConfigVar.ArmCfg.ROT_GRIPPER_SPEED);
         gripperToggle = new ToggleButton();
         handleToggle = new ToggleButton();
         transferToggle = new ToggleButton();
@@ -69,7 +71,7 @@ public void setHomePositions()
     mecanumDev.Initialize();
 
     gripperArm.setRange(ConfigVar.ArmCfg.GRIPPER_MIN, ConfigVar.ArmCfg.GRIPPER_MAX);
-    gripperArm.moveTo( ConfigVar.ArmCfg.gripperClosed);
+    gripperArm.moveTo( ConfigVar.ArmCfg.gripperOpened);
 
     handlerArm.setRange(ConfigVar.ArmCfg.HANDLER_MIN, ConfigVar.ArmCfg.HANDLER_MAX);
     handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed);
@@ -86,6 +88,9 @@ public void setHomePositions()
     turnerArm.setRange(ConfigVar.ArmCfg.TURNER_MIN,ConfigVar.ArmCfg.TURNER_MAX);
     turnerArm.moveTo( ConfigVar.ArmCfg.turnerIdle);
 
+    rotGripperArm.setRange( ConfigVar.ArmCfg.ROT_GRIPPER_MIN,ConfigVar.ArmCfg.ROT_GRIPPER_MAX);
+    rotGripperArm.moveTo( 150 );
+
     sliderDev.moveTo(ConfigVar.Slider.MIN_HEIGHT);
     initStatus = InitStatus.homesDone;
 }
@@ -99,6 +104,7 @@ void processAllSystems()
     poleArm2.execute();
     transferArm.execute();
     turnerArm.execute();
+    rotGripperArm.execute();
 }
 
 enum CagePrePick { cageIdle, cagePick1,cagePick2, cagePick3, cagePick4, cagePick5, cagePick6, cagePick7 };
@@ -109,12 +115,12 @@ public void prePickSACage(){
             if (!gamepad2.square || sliderDev.notReady() || gripperArm.notReady()  || poleArm1.notReady() || poleArm2.notReady()) break;
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
+            rotGripperArm.moveTo( 150 );
             if(hardware.sliderMotor1.getCurrentPosition() < ConfigVar.Slider.SA_HOME + 300) sliderDev.moveTo(ConfigVar.Slider.SP_PICK);
-            //tm.reset();
             cagePrePick = CagePrePick.cagePick1;
             break;
         case cagePick1:
-            if(sliderDev.notReady()) break;
+            if( sliderDev.notReady() || gripperArm.notReady() || rotGripperArm.notReady() || handlerArm.notReady() ) break;
             sliderDev.moveTo(ConfigVar.Slider.SA_HOME );
             //if( tm.seconds() < 1.0) break;
             cagePrePick = CagePrePick.cagePick2;
@@ -210,14 +216,15 @@ public void pickSpecimen()
             if( !gamepad2.triangle || sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady() || turnerArm.notReady() ) break;
            // if(gamepad2.ps) pickUpSample = PickSample.cancel;
             initStatus = InitStatus.pickStarted;
-            sliderDev.moveTo( ConfigVar.Slider.SA_HOME);
+//            sliderDev.moveTo( ConfigVar.Slider.SA_HOME);
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
+            rotGripperArm.moveTo( 150 );
             //tm.reset();
             pickUpSample = PickSample.pickSP1;
             break;
         case pickSP1:
-            if( /*tm.seconds() < 1.0 || */ poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
+            if( rotGripperArm.notReady() && poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
 
             poleArm1.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
             poleArm2.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
@@ -265,13 +272,14 @@ public void pickSpecimen()
             pickUpSample = PickSample.pickSP8;
             break;
         case pickSP8:
-            if( sliderDev.notReady() || handlerArm.notReady()) break; // Wait slider to complete it's move
+            if( sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady()) break; // Wait slider to complete it's move
             sliderDev.moveTo(ConfigVar.Slider.SP_PLACE );
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
+            rotGripperArm.moveTo( 150 );
             pickUpSample = PickSample.pickSP9;
             break;
         case pickSP9:
-            if(  sliderDev.notReady() ) break; // Wait slider to complete it's move
+            if(  sliderDev.notReady() || rotGripperArm.notReady()) break; // Wait slider to complete it's move
             poleArm1.moveTo(ConfigVar.ArmCfg.poleSpPlace);
             poleArm2.moveTo(ConfigVar.ArmCfg.poleSpPlace);
             pickUpSample = PickSample.pickSP10;
@@ -295,6 +303,20 @@ void killSwitch()
         sliderDev.stop();
     }
 }
+
+public void orientGripper()
+{
+    double jy = -gamepad2.right_stick_y;
+    double jx = gamepad2.right_stick_x;
+    double theta = Math.toDegrees( Math.atan2(jy,jx) );
+    double radiusPos = Math.sqrt( (jx * jx) + (jy * jy) );
+
+    if( radiusPos > 0.8 && theta > 0  ) rotGripperArm.moveTo( (240-theta) );
+    telemetry.addData("Theta:",theta);
+    telemetry.addData("R:",radiusPos);
+}
+
+
     @Override
 public void runOpMode() throws InterruptedException
 {
@@ -320,7 +342,10 @@ public void runOpMode() throws InterruptedException
         prePickSACage();
         pickSACage();
         if(gamepad2.dpad_left) gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
-
+        if(gamepad2.dpad_up) {poleArm1.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
+            poleArm2.moveTo(ConfigVar.ArmCfg.poleSpPrePick);}
+        //
+        orientGripper();
 
         pullUp.servoControl(gamepad1.circle);
         pullUp.motorControl(gamepad1.triangle, gamepad1.cross);

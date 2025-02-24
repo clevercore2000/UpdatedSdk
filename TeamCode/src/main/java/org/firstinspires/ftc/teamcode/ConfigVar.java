@@ -73,22 +73,23 @@ public class ConfigVar {
     @Config
     public static class ArmCfg{
         public static double GRIPPER_MIN = 0;
-        public static double GRIPPER_MAX = 180;
+        public static double GRIPPER_MAX = 300;
         public static double GRIPPER_SPEED = 100;
-        public static double gripperOpened = 120;
-        public static double gripperClosed= 11;
+
+        public static double gripperOpened = 110;
+        public static double gripperClosed=190;
 
         public static double HANDLER_MIN = -90;
         public static double HANDLER_MAX = +90;
-        public static double HANDLER_SPEED = 100;
+        public static double HANDLER_SPEED = 115;
         public static double handlerOpened = 28;
         public static double handlerClosed = 2;
 
         public static double TRANSFER_MIN = 0;
-        public static double TRANSFER_MAX = 1800;
+        public static double TRANSFER_MAX = 255;
         public static double TRANSFER_SPEED = 200;
-        public static double transferSpPreCoop = 0;
-        public static double transferSpCoop = 630;
+        public static double transferSpPreCoop = 235;
+        public static double transferSpCoop = 80;
 
         public static double POLE_MIN1 = 0;
         public static double POLE_MAX1 = 180;
@@ -111,12 +112,16 @@ public class ConfigVar {
         public static double TURNER_SPEED = 1000;
         public static double turnerIdle = 1000;
         public static double turnerFlipped = 340;
+
+        public static double ROT_GRIPPER_MIN = 0;
+        public static double ROT_GRIPPER_MAX = 300;
+        public static double ROT_GRIPPER_SPEED = 300;
     }
 
     @Config
     public static class PullUp{
 
-        public static double motorPower = 0.7;
+        public static double motorPower = 1;
 
         public static double PULL_MIN = 0;
         public static double PULL_MAX = 180;
