@@ -31,7 +31,7 @@ ToggleButton poleToggle;
 ToggleButton moveToSlider;
 
 RGBSensor rgbSensor;
-enum  InitStatus {notStarted, initDone, homesDone, opStarted, pickStarted};
+enum  InitStatus {notStarted, initDone};
 InitStatus initStatus = InitStatus.notStarted;
 public void initialize()
 {
@@ -92,7 +92,7 @@ public void setHomePositions()
     rotGripperArm.moveTo( 150 );
 
     sliderDev.moveTo(ConfigVar.Slider.MIN_HEIGHT);
-    initStatus = InitStatus.homesDone;
+
 }
 void processAllSystems()
 {
@@ -161,11 +161,9 @@ CagePick cagePick = CagePick.cagePickIdle;
 public void pickSACage()
 {
     switch ( cagePick ) {
-
         case cagePickIdle:
             // Check all servo's are ready
             if (!(gamepad2.circle && cagePrePick == CagePrePick.cagePick5)|| gripperArm.notReady() || poleArm1.notReady() || poleArm2.notReady()) break;
-
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
             cagePick = CagePick.cageGripper;
             break;
@@ -173,10 +171,8 @@ public void pickSACage()
             if (gripperArm.notReady() || poleArm1.notReady() || poleArm2.notReady()) break;
             poleArm1.moveTo(ConfigVar.ArmCfg.poleSaPick);
             poleArm2.moveTo(ConfigVar.ArmCfg.poleSaPick);
-
             cagePick = CagePick.cagePick;
             break;
-
         case cagePick:
             // Check all servo's are ready
             if (gripperArm.notReady() || poleArm1.notReady() || poleArm2.notReady()) break;
@@ -193,8 +189,7 @@ public void pickSACage()
     }
 }
 
-//enum PickUSample {pickIdle, pickStart, pickFlip, pickTransfer, pickPreGrab,pickGrab, pickSliderUp, pickPolePlace, pickToIdle }
-enum PickSample { cancel,pickIdle, pickSP1 ,pickSP2, pickSP3, pickSP4, pickSP5, pickSP6, pickSP7, pickSP71, pickSP8, pickSP9, pickSP10 }
+enum PickSample { pickIdle, pickSP1 ,pickSP2, pickSP3, pickSP4, pickSP5, pickSP6, pickSP7, pickSP71, pickSP8, pickSP9, pickSP10 }
 PickSample pickUpSample = PickSample.pickIdle;
 
 /*
@@ -208,25 +203,22 @@ public void pickSpecimen()
         case pickIdle:
             // Check all servo's are ready
             if( !gamepad2.triangle || sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady() || turnerArm.notReady() ) break;
-            initStatus = InitStatus.pickStarted;
-            gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
-            handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
+//            gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
+            handlerArm.moveTo(ConfigVar.ArmCfg.handlerOpened);
             rotGripperArm.moveTo( 150 );
             pickUpSample = PickSample.pickSP1;
             break;
         case pickSP1:
             if( rotGripperArm.notReady() && poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
-
             poleArm1.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
             poleArm2.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
             pickUpSample = PickSample.pickSP2;
             break;
         case pickSP2:
             if( poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
-
             if(hardware.sliderMotor2.getCurrentPosition() < ConfigVar.Slider.SP_PICK ) sliderDev.moveTo(ConfigVar.Slider.SP_PICK + 200); // Move slider to pre-pick position ( retracted up)
-
-            pickUpSample = PickSample.pickSP3;
+            handlerArm.moveTo(ConfigVar.ArmCfg.handlerOpened);
+            pickUpSample = PickSample.pickSP5;
             break;
             case pickSP3:
             if( poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
@@ -323,7 +315,7 @@ public void runOpMode() throws InterruptedException
 
     while ( opModeIsActive() )
     {
-        if( initStatus == InitStatus.homesDone) initStatus = InitStatus.opStarted;
+        //if( initStatus == InitStatus.homesDone) initStatus = InitStatus.opStarted;
         // Kill switch stops all sequences and stops the slider
         killSwitch();
         // mecanumDev moves manual according to joystick inputs

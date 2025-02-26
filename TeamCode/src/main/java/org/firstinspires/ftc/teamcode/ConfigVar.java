@@ -95,7 +95,7 @@ public class ConfigVar {
         public static double POLE_MAX1 = 180;
         public static double POLE_MIN2 = 0;
         public static double POLE_MAX2  = 180;
-        public static double POLE_SPEED = 100;
+        public static double POLE_SPEED = 200;
         public static double poleSpPick = 20;
         public static double poleSpPrePick = 80;
         public static double poleSpPlace = 0;

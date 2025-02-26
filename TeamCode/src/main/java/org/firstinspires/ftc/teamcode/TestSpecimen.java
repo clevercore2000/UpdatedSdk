@@ -162,7 +162,7 @@ public class TestSpecimen extends OpMode {
                 gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
                 handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
                 rotGripperArm.moveTo( 150 );
-                sliderDev.moveTo(ConfigVar.Slider.SP_PICK + 200);
+                sliderDev.moveTo(ConfigVar.Slider.SP_PRE_PICK);
 
                 //tm.reset();
                 pickUpSample = PickSample.pickSP1;
