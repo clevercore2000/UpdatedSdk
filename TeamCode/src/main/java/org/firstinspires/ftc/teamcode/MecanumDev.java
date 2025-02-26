@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import static java.lang.Math.sqrt;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -12,7 +13,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  *   ** Methods Move__To have distance (in encoder_ticks ) and speed as encoder_ticks/sec
  *   ** Moves using joystickare not implemented yet - we just need to decide how joystick inputs are used ( not a difficult job anyway :) )
  */
-
+@Disabled
 public class MecanumDev// extends Thread
 {
 

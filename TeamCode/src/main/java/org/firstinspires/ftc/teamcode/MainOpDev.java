@@ -116,12 +116,11 @@ public void prePickSACage(){
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
             rotGripperArm.moveTo( 150 );
-            if(hardware.sliderMotor1.getCurrentPosition() < ConfigVar.Slider.SA_HOME + 300) sliderDev.moveTo(ConfigVar.Slider.SP_PICK);
+            if(hardware.sliderMotor1.getCurrentPosition() < ConfigVar.Slider.SA_HOME + 300) sliderDev.moveTo(ConfigVar.Slider.SP_PRE_PICK);
             cagePrePick = CagePrePick.cagePick1;
             break;
         case cagePick1:
             if( sliderDev.notReady() || gripperArm.notReady() || rotGripperArm.notReady() || handlerArm.notReady() ) break;
-            sliderDev.moveTo(ConfigVar.Slider.SA_HOME );
             //if( tm.seconds() < 1.0) break;
             cagePrePick = CagePrePick.cagePick2;
         case cagePick2:
@@ -206,21 +205,13 @@ public void pickSpecimen()
 {
     switch( pickUpSample )
     {
-        /*case cancel:
-            sliderDev.moveTo(hardware.sliderMotor1.getCurrentPosition());
-            poleArm1.moveTo(ConfigVar.ArmCfg.poleIdle);
-            poleArm2.moveTo(ConfigVar.ArmCfg.poleIdle);
-            break;*/
         case pickIdle:
             // Check all servo's are ready
             if( !gamepad2.triangle || sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady() || turnerArm.notReady() ) break;
-           // if(gamepad2.ps) pickUpSample = PickSample.cancel;
             initStatus = InitStatus.pickStarted;
-//            sliderDev.moveTo( ConfigVar.Slider.SA_HOME);
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
             handlerArm.moveTo(ConfigVar.ArmCfg.handlerClosed);
             rotGripperArm.moveTo( 150 );
-            //tm.reset();
             pickUpSample = PickSample.pickSP1;
             break;
         case pickSP1:
@@ -232,7 +223,9 @@ public void pickSpecimen()
             break;
         case pickSP2:
             if( poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
-            sliderDev.moveTo(ConfigVar.Slider.SP_PRE_PICK ); // Move slider to pre-pick position ( retracted up)
+
+            if(hardware.sliderMotor2.getCurrentPosition() < ConfigVar.Slider.SP_PICK ) sliderDev.moveTo(ConfigVar.Slider.SP_PICK + 200); // Move slider to pre-pick position ( retracted up)
+
             pickUpSample = PickSample.pickSP3;
             break;
             case pickSP3:
@@ -356,23 +349,23 @@ public void runOpMode() throws InterruptedException
         processAllSystems();
 
         // Telemetry
-        telemetry.addData("Sts:", pickUpSample );
-        telemetry.addData("Init:",initStatus);
+       // telemetry.addData("Sts:", pickUpSample );
+        //telemetry.addData("Init:",initStatus);
         //telemetry.addData("PrePick", cagePrePick);
         //telemetry.addData("Pick:", cagePick);
 /*
         telemetry.addData("whPos", mecanumDev.odo.actWheelsPos[0]);
         telemetry.addData("whSpe", mecanumDev.odo.actWheelsSpeed[0]);
         telemetry.addData("Pos:" , mecanumDev.odo.actPos[0]);
-        telemetry.addData("Spe" , mecanumDev.odo.actSpeed[0]);
+        telemetry.addData("Spe" , mecanumDev.odo.actSpeed[0]);*/
         telemetry.addData("sPos:", sliderDev.actPos);
- */
+
 //        telemetry.addData("gripper:", hardware.gripperServo.getPosition());
-//        telemetry.addData("sliderSts:", sliderDev.Status);
-//        telemetry.addData("trgPos:", sliderDev.targetPos);
-//        telemetry.addData("actSpe:", sliderDev.actSpeed);
+     telemetry.addData("sliderSts:", sliderDev.Status);
+     telemetry.addData("trgPos:", sliderDev.targetPos);
+     telemetry.addData("actSpe:", sliderDev.actSpeed);
 //        telemetry.addData("spSpe", sliderDev.sspSpeed );
-//        telemetry.addData("sPow:", sliderDev.sliderPower);
+    telemetry.addData("sPow:", sliderDev.sliderPower);
 //        telemetry.addData("spSpeed:", sliderDev.getSpSpeed());
 //        telemetry.addData("actPos:", sliderDev.getActPosition());
         telemetry.addData("Mec:", mecanumDev.isReady());

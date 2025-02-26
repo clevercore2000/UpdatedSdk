@@ -40,7 +40,7 @@ public class ConfigVar {
         //public static double MAX_ACCEL = 500;
         public static double MAX_POWER = 1.0D;
         //public static double MAX_SPEED = 1700; // Encoder-ticks/sec
-        public static double EMA_FILTER = 0.6;
+        public static double EMA_FILTER = 0;
         // Speed Ramp Generator
         //  * uses logistic function to generate a setpoint signal for the speed controller
         public static double STICK_DEAD_ZONE = 0.0D;
@@ -48,9 +48,9 @@ public class ConfigVar {
         public static double JOG_SPEED = 2000.0D;
         public static double MAX_HEIGHT = 4500.0D;
         public static double MIN_HEIGHT = 100.0D;
-        public static double SP_PRE_PICK = 1200.0D; //
-        public static double SP_PICK = 550.0D;      //
-        public static double SP_PLACE = 2920.0D;
+        public static double SP_PRE_PICK = 700.0D; //
+        public static double SP_PICK = 670.0D;      //
+        public static double SP_PLACE = 3050.0D;
         public static double SA_HOME = 400.0D;
         public static double SA_PRE_PICK = 330;
 
@@ -87,9 +87,9 @@ public class ConfigVar {
 
         public static double TRANSFER_MIN = 0;
         public static double TRANSFER_MAX = 255;
-        public static double TRANSFER_SPEED = 200;
+        public static double TRANSFER_SPEED = 300;
         public static double transferSpPreCoop = 235;
-        public static double transferSpCoop = 80;
+        public static double transferSpCoop = 90;
 
         public static double POLE_MIN1 = 0;
         public static double POLE_MAX1 = 180;

@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode;
 import static java.lang.Math.cos;
 import static java.lang.Math.sin;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 //package org.firstinspires.ftc.teamcode;
 
-
+@Disabled
 public class EncOdoDev
 {
 
