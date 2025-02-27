@@ -30,6 +30,8 @@ public class TestsOpDev extends LinearOpMode
     ToggleButton turnerToggle;
     ToggleButton poleToggle;
     double polePos;
+
+    boolean handlerClosed = false;
     public void initialize()
     {
         // ... initialization logic ...
@@ -69,7 +71,7 @@ public class TestsOpDev extends LinearOpMode
         gripperArm.setRange(ConfigVar.ArmCfg.GRIPPER_MIN, ConfigVar.ArmCfg.GRIPPER_MAX);
 //    gripperArm.moveTo( ConfigVar.ArmCfg.gripperOpened);
         handlerArm.setRange(ConfigVar.ArmCfg.HANDLER_MIN, ConfigVar.ArmCfg.HANDLER_MAX);
-//    handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed);
+         handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed);
 
         transferArm.setRange(ConfigVar.ArmCfg.TRANSFER_MIN, ConfigVar.ArmCfg.TRANSFER_MAX);
         transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop);
@@ -85,7 +87,7 @@ public class TestsOpDev extends LinearOpMode
     void processAllSystems()
     {
         mecanumDev.execute();
-        sliderDev.execute();
+        //sliderDev.execute();
         gripperArm.execute();
         handlerArm.execute();
         poleArm1.execute();
@@ -118,11 +120,13 @@ public class TestsOpDev extends LinearOpMode
         else
             gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened );
 
-        if(handleToggle.Toggle(gamepad2.dpad_left))
+        if(handleToggle.Toggle(gamepad2.dpad_left)){
             handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed );
-        else
+            handlerClosed = true;}
+        else{
             handlerArm.moveTo( ConfigVar.ArmCfg.handlerOpened );
-
+            handlerClosed = false;}
+            /*
         if( poleToggle.Toggle(gamepad2.dpad_down ) ){
             poleArm1.moveTo( 0);
             poleArm2.moveTo( 0);
@@ -133,9 +137,11 @@ public class TestsOpDev extends LinearOpMode
             poleArm2.moveTo(180);
            //polePos = ConfigVar.ArmCfg.poleSpPrePick;
         };
+        */
 
         if( transferToggle.Toggle(gamepad2.circle) )
             transferArm.moveTo(ConfigVar.ArmCfg.transferSpCoop);
+
         else
             transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop );
 
@@ -157,7 +163,7 @@ public class TestsOpDev extends LinearOpMode
         telemetry.addData("Spe" , mecanumDev.odo.actSpeed[0]);
         telemetry.addData("sPos:", sliderDev.actPos);
  */
-//        telemetry.addData("gripper:", hardware.gripperServo.getPosition());
+   telemetry.addData("HANDLER closed:", handlerClosed);
 //        telemetry.addData("sliderSts:", sliderDev.Status);
 //        telemetry.addData("trgPos:", sliderDev.targetPos);
 //        telemetry.addData("actSpe:", sliderDev.actSpeed);

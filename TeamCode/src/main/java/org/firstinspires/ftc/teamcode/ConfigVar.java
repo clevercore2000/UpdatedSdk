@@ -83,7 +83,7 @@ public class ConfigVar {
         public static double HANDLER_MAX = +90;
         public static double HANDLER_SPEED = 115;
         public static double handlerOpened = 28;
-        public static double handlerClosed = 2;
+        public static double handlerClosed = 0;
 
         public static double TRANSFER_MIN = 0;
         public static double TRANSFER_MAX = 255;

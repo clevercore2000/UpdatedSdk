@@ -148,9 +148,7 @@ public void prePickSACage(){
             if (poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || sliderDev.notReady()) break;
             sliderDev.moveTo(ConfigVar.Slider.TOP_BASCKET_POS);
             poleArm1.moveTo(ConfigVar.ArmCfg.poleSaPlace2);
-            poleArm2.moveTo(ConfigVar.ArmCfg.poleSaPlace2
-
-            );
+            poleArm2.moveTo(ConfigVar.ArmCfg.poleSaPlace2);
             cagePrePick = CagePrePick.cageIdle;
             break;
     }

@@ -18,6 +18,7 @@ import com.pedropathing.pathgen.MathFunctions;
 import com.pedropathing.pathgen.Vector;
 import com.pedropathing.util.Constants;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -47,6 +48,7 @@ import pedroPathing.constants.LConstants;
  * @author Harrison Womack - 10158 Scott's Bots
  * @version 1.0, 3/13/2024
  */
+@Disabled
 @Config
 @Autonomous(name = "Forward Zero Power Acceleration Tuner", group = "Automatic Tuners")
 public class ForwardZeroPowerAccelerationTuner extends OpMode {

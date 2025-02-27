@@ -6,7 +6,7 @@ import com.pedropathing.localization.constants.ThreeWheelConstants;
 
 public class LConstants {
     static {
-        DriveEncoderConstants.forwardTicksToInches = 0.011;
+        DriveEncoderConstants.forwardTicksToInches = 0.0107;
         DriveEncoderConstants.strafeTicksToInches = 0.0117;
         DriveEncoderConstants.turnTicksToInches = 0.0117 ;
 

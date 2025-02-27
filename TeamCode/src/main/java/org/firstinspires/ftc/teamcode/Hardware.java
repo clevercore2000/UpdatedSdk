@@ -37,8 +37,8 @@ public class Hardware
         //Chassis
         rightFront = hw.get(DcMotor.class, "rightFront");
         leftFront = hw.get(DcMotor.class, "leftFront");
-        rightBack = hw.get(DcMotor.class, "rightBack");
-        leftBack = hw.get(DcMotor.class, "leftBack");
+        rightBack = hw.get(DcMotor.class, "rightRear");
+        leftBack = hw.get(DcMotor.class, "leftRear");
         //Lift(Slider)
         sliderMotor1 = hw.get(DcMotor.class, "sliderMotor1");
         sliderMotor2 = hw.get(DcMotor.class, "sliderMotor2");

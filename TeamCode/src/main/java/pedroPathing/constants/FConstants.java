@@ -9,9 +9,9 @@ public class FConstants {
         FollowerConstants.localizers = Localizers.DRIVE_ENCODERS;
 
         FollowerConstants.leftFrontMotorName = "leftFront";
-        FollowerConstants.leftRearMotorName = "leftBack";
+        FollowerConstants.leftRearMotorName = "leftRear";
         FollowerConstants.rightFrontMotorName = "rightFront";
-        FollowerConstants.rightRearMotorName = "rightBack";
+        FollowerConstants.rightRearMotorName = "rightRear";
 
         FollowerConstants.leftFrontMotorDirection = DcMotorSimple.Direction.REVERSE;
         FollowerConstants.leftRearMotorDirection = DcMotorSimple.Direction.REVERSE;
@@ -30,7 +30,7 @@ public class FConstants {
         FollowerConstants.useSecondaryTranslationalPID = true   ;
         FollowerConstants.secondaryTranslationalPIDFCoefficients.setCoefficients(0.15,0,0.01,0); // Not being used, @see useSecondaryTranslationalPID
 
-        FollowerConstants.headingPIDFCoefficients.setCoefficients(4,0,0.3,0.15);
+        FollowerConstants.headingPIDFCoefficients.setCoefficients(2,0,0.3,0.15);
         FollowerConstants.useSecondaryHeadingPID = false;
         FollowerConstants.secondaryHeadingPIDFCoefficients.setCoefficients(2,0,0.1,0); // Not being used, @see useSecondaryHeadingPID
 
