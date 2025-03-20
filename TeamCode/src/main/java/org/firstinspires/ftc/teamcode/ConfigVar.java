@@ -4,8 +4,21 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import java.util.Stack;
+
 
 public class ConfigVar {
+    @Config
+    public static class Temp{
+        public static double temp1= 148.0D;
+        public static double temp2;
+        public static double temp3;
+        public static double temp4;
+        public static double temp5;
+        public static double temp6;
+
+
+    }
     @Config
     public static class Mecanum {
         // The IN_WINDOW constants define the positioning accuracy ( used in inPosition method )
@@ -47,7 +60,7 @@ public class ConfigVar {
         public static double STICK_GAIN =  1.0D;  // Joystick input value
         public static double JOG_SPEED = 2000.0D;
         public static double MAX_HEIGHT = 4500.0D;
-        public static double MIN_HEIGHT = 100.0D;
+        public static double MIN_HEIGHT = 0D;
         public static double SP_PRE_PICK = 700.0D; //
         public static double SP_PICK = 670.0D;      //
         public static double SP_PLACE = 3050.0D;
@@ -77,13 +90,13 @@ public class ConfigVar {
         public static double GRIPPER_SPEED = 100;
 
         public static double gripperOpened = 110;
-        public static double gripperClosed=190;
+        public static double gripperClosed=180;
 
-        public static double HANDLER_MIN = -90;
-        public static double HANDLER_MAX = +90;
+        public static double HANDLER_MIN = 0;
+        public static double HANDLER_MAX = 300;
         public static double HANDLER_SPEED = 115;
-        public static double handlerOpened = 28;
-        public static double handlerClosed = 0;
+        public static double handlerOpened = 80;
+        public static double handlerClosed = 7;
 
         public static double TRANSFER_MIN = 0;
         public static double TRANSFER_MAX = 255;
@@ -97,7 +110,7 @@ public class ConfigVar {
         public static double POLE_MAX2  = 180;
         public static double POLE_SPEED = 200;
         public static double poleSpPick = 20;
-        public static double poleSpPrePick = 80;
+        public static double poleSpPrePick = 90;
         public static double poleSpPlace = 0;
         public static double poleSaPrePick = 145;
         public static double poleSaPick = 173;

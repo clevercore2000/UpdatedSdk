@@ -77,9 +77,9 @@ public class TestsOpDev extends LinearOpMode
         transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop);
 
         poleArm1.setRange(ConfigVar.ArmCfg.POLE_MIN1,ConfigVar.ArmCfg.POLE_MAX1);
-        poleArm1.moveTo( ConfigVar.ArmCfg.poleIdle);
+       // poleArm1.moveTo( ConfigVar.ArmCfg.poleIdle);
         poleArm2.setRange(ConfigVar.ArmCfg.POLE_MIN2,ConfigVar.ArmCfg.POLE_MAX2);
-        poleArm2.moveTo( ConfigVar.ArmCfg.poleIdle);
+        //poleArm2.moveTo( ConfigVar.ArmCfg.poleIdle);
         turnerArm.setRange(ConfigVar.ArmCfg.TURNER_MIN,ConfigVar.ArmCfg.TURNER_MAX);
 //        turnerArm.moveTo( ConfigVar.ArmCfg.turnerIdle);
     }

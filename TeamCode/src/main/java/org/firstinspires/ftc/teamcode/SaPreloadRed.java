@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.localization.PoseUpdater;
-import com.pedropathing.pathgen.BezierCurve;
 import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.Path;
-import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Constants;
 import com.pedropathing.util.DashboardPoseTracker;
@@ -28,8 +26,8 @@ import pedroPathing.constants.LConstants;
  * @version 2.0, 11/28/2024
  */
 
-@Autonomous(name = "Preload Sample Blue")
-public class SaPreloadBlue extends OpMode {
+@Autonomous(name = "Preload Sample Red")
+public class SaPreloadRed extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
 
@@ -51,13 +49,13 @@ public class SaPreloadBlue extends OpMode {
     private int pathState;
 
     /** Start Pose of our robot */
-    private final Pose startPose = new Pose(8, 66   , Math.toRadians(90));
+    private final Pose startPose = new Pose(136, 66   , Math.toRadians(90));
 
 
     /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
     private final Pose preScorePose = new Pose(30, 30 , Math.toRadians(100));
     private final Pose scorePose = new Pose(28,28, Math.toRadians(100));
-    private final Pose backOffPose = new Pose(40,40, Math.toRadians(100));
+    private final Pose backOffPose = new Pose(28,35, Math.toRadians(100));
 
     private final Pose postScorePose = new Pose(24, 76.8, Math.toRadians(180));
     private final Pose fineScorePos = new Pose(38, 76.6, Math.toRadians(180));
@@ -90,12 +88,7 @@ public class SaPreloadBlue extends OpMode {
      * The followPath() function sets the follower to run the specific path, but does NOT wait for it to finish before moving on. */
     public void autonomousPathUpdate() {
         switch (pathState) {
-            case -1:
-                setHomePositions();
-                pathState=0;
-                break;
             case 0:
-                if( gripperArm.notReady()|| rotGripperArm.notReady() ||poleArm1.notReady()||poleArm2.notReady()) break;
                 follower.followPath(preScorePreload);
                 gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
                 pathState = 1;
@@ -199,7 +192,7 @@ public class SaPreloadBlue extends OpMode {
         follower = new Follower(hardwareMap);
         follower.setStartingPose(startPose);
         buildPaths();
-        pathState = -1;
+        pathState = 0;
         Drawing.drawRobot(poseUpdater.getPose(), "#4CAF50");
         Drawing.sendPacket();
 
@@ -208,9 +201,7 @@ public class SaPreloadBlue extends OpMode {
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
     public void init_loop() {
-
-
-
+        setHomePositions();
     }
 
     /** This method is called once at the start of the OpMode.
@@ -245,7 +236,7 @@ public class SaPreloadBlue extends OpMode {
         turnerArm.moveTo( ConfigVar.ArmCfg.turnerIdle);
 
         rotGripperArm.setRange( ConfigVar.ArmCfg.ROT_GRIPPER_MIN,ConfigVar.ArmCfg.ROT_GRIPPER_MAX);
-        rotGripperArm.moveTo( ConfigVar.Temp.temp1   );
+        rotGripperArm.moveTo( 150 );
 
         sliderDev.moveTo(ConfigVar.Slider.MIN_HEIGHT);
 

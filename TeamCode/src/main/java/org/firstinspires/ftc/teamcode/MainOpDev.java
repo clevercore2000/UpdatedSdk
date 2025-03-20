@@ -251,6 +251,7 @@ public void pickSpecimen()
             pickUpSample = PickSample.pickSP71;
             break;
         case pickSP71:
+            if(handlerArm.notReady() )break;
             transferArm.moveTo(ConfigVar.ArmCfg.transferSpPreCoop);
             pickUpSample = PickSample.pickSP8;
             break;
@@ -325,7 +326,7 @@ public void runOpMode() throws InterruptedException
         prePickSACage();
         pickSACage();
         if(gamepad2.dpad_left) gripperArm.moveTo(ConfigVar.ArmCfg.gripperOpened);
-        if(gamepad2.dpad_up) {poleArm1.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
+        if(gamepad2.dpad_up) {poleArm1.moveTo(ConfigVar.ArmCfg.poleSpPlace);
             poleArm2.moveTo(ConfigVar.ArmCfg.poleSpPrePick);}
         //
         orientGripper();

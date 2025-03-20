@@ -1,22 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
-
-
 import com.pedropathing.follower.Follower;
 import com.pedropathing.localization.Pose;
 import com.pedropathing.localization.PoseUpdater;
 import com.pedropathing.pathgen.BezierCurve;
 import com.pedropathing.pathgen.BezierLine;
 import com.pedropathing.pathgen.Path;
-import com.pedropathing.pathgen.PathChain;
 import com.pedropathing.pathgen.Point;
 import com.pedropathing.util.Constants;
 import com.pedropathing.util.DashboardPoseTracker;
 import com.pedropathing.util.Drawing;
 import com.pedropathing.util.Timer;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import pedroPathing.constants.FConstants;
 import pedroPathing.constants.LConstants;
@@ -31,8 +27,8 @@ import pedroPathing.constants.LConstants;
  * @version 2.0, 11/28/2024
  */
 
-@Autonomous(name = "Preload Specimen Blue", group = "Blue Autos")
-public class SpPreloadBlue extends OpMode {
+@Autonomous(name = "Preload Specimen Red")
+public class SpPreloadRed extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
 
@@ -49,42 +45,28 @@ public class SpPreloadBlue extends OpMode {
     private ArmDev rotGripperArm;
     private SliderDev sliderDev;
 
-    /** This is the variable where we store the state of our auto.
-     * It is used by the pathUpdate method. */
     private int pathState;
 
-    /* Create and Define Poses + Paths
-     * Poses are built with three constructors: x, y, and heading (in Radians).
-     * Pedro uses 0 - 144 for x and y, with 0, 0 being on the bottom left.
-     * (For Into the Deep, this would be Blue Observation Zone (0,0) to Red Observation Zone (144,144).)
-     * Even though Pedro uses a different coordinate system than RR, you can convert any roadrunner pose by adding +72 both the x and y.
-     * This visualizer is very easy to use to find and create paths/pathchains/poses: <https://pedro-path-generator.vercel.app/>
-     * Lets assume our robot is 18 by 18 inches
-     * Lets assume the Robot is facing the human player and we want to score in the bucket */
 
-    /** Start Pose of our robot */
-    private final Pose startPose = new Pose(8, 79   , Math.toRadians(180));
 
-    /** Scoring Pose of our robot. It is facing the submersible at a -45 degree (315 degree) angle. */
-    private final Pose scorePose = new Pose(34, 76.6, Math.toRadians(180));
-    private final Pose scoreControlPose = new Pose(25.7,76.8, Math.toRadians(180) );
-    private final Pose postScorePose = new Pose(24, 76.8, Math.toRadians(180));
-    private final Pose fineScorePos = new Pose(38, 76.6, Math.toRadians(180));
-    private final Pose parkPose = new Pose(4, 140.3, Math.toRadians(180));
+    private final Pose startPose = new Pose(136, 65   , Math.toRadians(0));
+
+
+    private final Pose scorePose = new Pose(110, 67.6, Math.toRadians(0));
+    private final Pose scoreControlPose = new Pose(121,65.5, Math.toRadians(0) );
+    private final Pose postScorePose = new Pose(130, 67, Math.toRadians(0));
+    private final Pose fineScorePos = new Pose(110, 67, Math.toRadians(0));
+    private final Pose parkPose = new Pose(137, 15, Math.toRadians(0));
 
     private final Pose pickUp1pos = new Pose(46, 35, Math.toRadians(270));
     private final Pose controlPickUp1pos = new Pose(19.212, 52.2);
 
-    /* These are our Paths and PathChains that we will define in buildPaths() */
+
     private Path scorePreload;
     private Path postScorePreload;
     private Path fineScore;
     private Path park;
     //private PathChain push1, push2, push3, park, prePark;
-    private ElapsedTime timer;
-
-    /** Build the paths for the auto (adds, for example, constant/linear headings while doing paths)
-     * It is necessary to do this so that all the paths are built before the auto starts. **/
     public void buildPaths() {
 
 
@@ -122,10 +104,10 @@ public class SpPreloadBlue extends OpMode {
                 if( sliderDev.notReady() ) break;
 
 
-              //  gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
+                gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
                 handlerArm.moveTo(ConfigVar.ArmCfg.handlerOpened);
                 rotGripperArm.moveTo( 150 );
-                sliderDev.moveTo(ConfigVar.Slider.SP_PRE_PICK);
+                sliderDev.moveTo(ConfigVar.Slider.SP_PRE_PICK +500);
 
                 //tm.reset();
                 pickUpSample = PickSample.pickSp12;
@@ -134,7 +116,7 @@ public class SpPreloadBlue extends OpMode {
                 if( rotGripperArm.notReady() && poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
                     transferArm.moveTo(ConfigVar.ArmCfg.transferSpCoop);
             case pickSP1:
-                if( rotGripperArm.notReady() && poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() )break;
+                if( rotGripperArm.notReady() && poleArm1.notReady() || poleArm2.notReady() || gripperArm.notReady() || handlerArm.notReady() || sliderDev.notReady() ) break;
 
                 poleArm1.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
                 poleArm2.moveTo(ConfigVar.ArmCfg.poleSpPrePick);
@@ -185,7 +167,7 @@ public class SpPreloadBlue extends OpMode {
             case pickSP8:
                 if( sliderDev.notReady() || handlerArm.notReady() || transferArm.notReady()) break; // Wait slider to complete it's move
                 sliderDev.moveTo(3050 );
-                //gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
+                gripperArm.moveTo(ConfigVar.ArmCfg.gripperClosed);
                 rotGripperArm.moveTo( 150 );
                 pickUpSample = PickSample.pickSP9;
                 break;
@@ -208,15 +190,11 @@ public class SpPreloadBlue extends OpMode {
     public void autonomousPathUpdate() {
         switch (pathState) {
             case 0:
-                setHomePositions();
-             //   if(timer.seconds() < 5)break;
-
                 specimenStart = true;
-
                 pathState = 1;
                 break;
             case 1:
-                if( specimenStart  || gripperArm.notReady()|| rotGripperArm.notReady()) break;
+                if( specimenStart ) break;
                 follower.followPath(scorePreload);
                 pathState = 2;
                 break;
@@ -230,7 +208,7 @@ public class SpPreloadBlue extends OpMode {
                 if( follower.isBusy() ) break;
 
                 sliderDev.moveTo( 3400, 1000 );
-                follower.followPath(fineScore);
+               // follower.followPath(fineScore);
 
                 pathState = 3;
                 break;
@@ -263,7 +241,6 @@ public class SpPreloadBlue extends OpMode {
                 if(poleArm1.notReady()||poleArm2.notReady())break;
                 sliderDev.moveTo(-200);
                 break;
-
         }
     }
 
@@ -273,7 +250,6 @@ public class SpPreloadBlue extends OpMode {
     public void loop() {
 
         // These loop the movements of the robot
-
         follower.update();
         poseUpdater.update();
         dashboardPoseTracker.update();
@@ -284,10 +260,10 @@ public class SpPreloadBlue extends OpMode {
         gripperArm.execute();
         poleArm1.execute();
         poleArm2.execute();
-        //transferArm.execute();
+        transferArm.execute();
         rotGripperArm.execute();
 
-        autonomousPathUpdate();
+
 
         // Feedback to Driver Hub
         telemetry.addData("path state", pathState);
@@ -296,7 +272,6 @@ public class SpPreloadBlue extends OpMode {
         telemetry.addData("y", follower.getPose().getY());
         telemetry.addData("heading", follower.getPose().getHeading());
         telemetry.addData("specStart", specimenStart);
-        telemetry.addData("timer", timer.seconds());
         telemetry.update();
 
         Drawing.drawPoseHistory(dashboardPoseTracker, "#4CAF50");
@@ -325,10 +300,8 @@ public class SpPreloadBlue extends OpMode {
         turnerArm = new ArmDev(hardware.turnerServo, ConfigVar.ArmCfg.TURNER_SPEED);
         poleArm2 = new ArmDev(hardware.poleServo2, ConfigVar.ArmCfg.POLE_SPEED);
         rotGripperArm = new ArmDev(hardware.rotateGripper,ConfigVar.ArmCfg.ROT_GRIPPER_SPEED);
-        timer = new ElapsedTime();
-        timer.startTime();
 
-
+        //setHomePositions();
 
 
         Constants.setConstants(FConstants.class, LConstants.class);
@@ -344,7 +317,7 @@ public class SpPreloadBlue extends OpMode {
     /** This method is called continuously after Init while waiting for "play". **/
     @Override
     public void init_loop() {
-        timer.reset();
+        setHomePositions();
     }
 
     /** This method is called once at the start of the OpMode.
@@ -361,13 +334,13 @@ public class SpPreloadBlue extends OpMode {
         // .. Set Home/Idle positions of all systems ...
 
         gripperArm.setRange(ConfigVar.ArmCfg.GRIPPER_MIN, ConfigVar.ArmCfg.GRIPPER_MAX);
-        gripperArm.moveTo( 70);
+        gripperArm.moveTo( ConfigVar.ArmCfg.gripperOpened);
 
         handlerArm.setRange(ConfigVar.ArmCfg.HANDLER_MIN, ConfigVar.ArmCfg.HANDLER_MAX);
         handlerArm.moveTo( ConfigVar.ArmCfg.handlerClosed);
 
         transferArm.setRange(ConfigVar.ArmCfg.TRANSFER_MIN, ConfigVar.ArmCfg.TRANSFER_MAX);
-        //transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop);
+        transferArm.moveTo( ConfigVar.ArmCfg.transferSpPreCoop);
 
         poleArm1.setRange(ConfigVar.ArmCfg.POLE_MIN1,ConfigVar.ArmCfg.POLE_MAX1);
         poleArm1.moveTo( ConfigVar.ArmCfg.poleIdle);
@@ -379,7 +352,7 @@ public class SpPreloadBlue extends OpMode {
         turnerArm.moveTo( ConfigVar.ArmCfg.turnerIdle);
 
         rotGripperArm.setRange( ConfigVar.ArmCfg.ROT_GRIPPER_MIN,ConfigVar.ArmCfg.ROT_GRIPPER_MAX);
-        rotGripperArm.moveTo( 60 );
+       // rotGripperArm.moveTo( 150 );
 
         sliderDev.moveTo(ConfigVar.Slider.MIN_HEIGHT);
 
